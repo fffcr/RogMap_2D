@@ -102,6 +102,15 @@ namespace rog_map {
 
         GridType getGridType2D(const double &x, const double &y) const;
 
+        /// 扫描一个 XY 柱子：min over z 的 3D 距离
+        MinZResult queryCell2D(const double &x, const double &y) const;
+
+        /// 构建整张 2D 距离场（会覆盖 field_）
+        void buildField2D();
+
+        /// 2D 距离场（给外部查询 / 发布用）
+        const Field2D &getField2D() const { return field_; }
+
     protected:
         rog_map::Config cfg_;
         InfMap::Ptr inf_map_;
@@ -109,6 +118,11 @@ namespace rog_map {
         ESDFMap::Ptr esdf_map_;
         /// Spherical neighborhood lookup table
         std::vector<float> occupancy_buffer_;
+
+        /// odom 位姿缓存
+        Vec3f cur_odom_{};
+        /// 2D 距离场
+        Field2D field_;
 
         bool map_empty_{true};
         struct RaycastData {

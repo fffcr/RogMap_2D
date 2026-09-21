@@ -40,6 +40,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 #include <nav_msgs/msg/odometry.hpp>
+#include <nav_msgs/msg/occupancy_grid.hpp>
 #include <sensor_msgs/msg/point_cloud2.hpp>
 #include <tf2_ros/transform_broadcaster.h>
 #include <visualization_msgs/msg/marker_array.hpp>
@@ -71,6 +72,9 @@ namespace rog_map {
             rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr mkr_arr_pub;
             rclcpp::TimerBase::SharedPtr viz_timer;
             rclcpp::CallbackGroup::SharedPtr viz_reen_cbk_group;
+            rclcpp::Publisher<nav_msgs::msg::OccupancyGrid>::SharedPtr proj2d_pub;
+            rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr proj2d_sdf_pub;
+            
         } vm_;
 
         struct ROSCallback {
@@ -239,6 +243,63 @@ namespace rog_map {
                 //     vm_.esdf_neg_pub->publish(cloud_msg);
                 // }
 
+                if (cfg_.projection.enable && vm_.proj2d_pub->get_subscription_count() >= 1) {
+            const Field2D &f = getField2D();
+            const int w = f.width(), h = f.height();
+            if (w > 0 && h > 0) {
+                nav_msgs::msg::OccupancyGrid grid;
+                grid.header.frame_id = cfg_.frame_id;          // "world"
+                grid.header.stamp = nh_->get_clock()->now();
+                grid.info.resolution = f.resolution();
+                grid.info.width = w;
+                grid.info.height = h;
+                grid.info.origin.position.x = f.origin().x();
+                grid.info.origin.position.y = f.origin().y();
+                grid.info.origin.orientation.w = 1.0;
+
+                grid.data.resize(static_cast<size_t>(w) * h);
+                const auto &d = f.distances();
+                const auto &occ = f.occupied();
+                for (size_t i = 0; i < d.size(); ++i) {
+                    // -1 未知 / 0 空闲 / 100 致命障碍；中间给渐变代价，方便 costmap 直接用
+                    if (d[i] >= cfg_.projection.max_distance - 1e-6) {
+                        grid.data[i] = 0;               // 远离开阔区
+                    } else if (occ[i]) {
+                        grid.data[i] = 100;             // 致命
+                    } else {
+                        // 距离 < 1 m 的区域给递增代价（0~99），给局部规划器留安全边界
+                        const double t = std::clamp(1.0 - d[i], 0.0, 1.0);
+                        grid.data[i] = static_cast<int8_t>(t * 99.0);
+                    }
+                }
+                vm_.proj2d_pub->publish(grid);
+            }
+        }
+
+        if (cfg_.projection.enable && vm_.proj2d_sdf_pub->get_subscription_count() >= 1) {
+        const Field2D &f = getField2D();
+        const int w = f.width(), h = f.height();
+        const double res = f.resolution();
+        const auto &d = f.distances();
+        pcl::PointCloud<pcl::PointXYZI> pc;
+        pc.reserve(static_cast<size_t>(w) * h);
+        for (int j = 0; j < h; ++j) {
+            for (int i = 0; i < w; ++i) {
+                pcl::PointXYZI pt;
+                pt.x = f.origin().x() + (i + 0.5) * res;
+                pt.y = f.origin().y() + (j + 0.5) * res;
+                pt.z = robot_state_.p.z();          // 画在车的高度，好和 occ 对比
+                pt.intensity = d[static_cast<size_t>(j) * w + i];   // rviz 按 intensity 上色
+                pc.push_back(pt);
+            }
+        }
+        sensor_msgs::msg::PointCloud2 msg;
+        pcl::toROSMsg(pc, msg);
+        msg.header.frame_id = cfg_.frame_id;
+        msg.header.stamp = nh_->get_clock()->now();
+        vm_.proj2d_sdf_pub->publish(msg);
+    }
+
 #ifdef ESDF_MAP_DEBUG
         esdf_map_->getESDFOccPC2(box_min, box_max,cloud_msg);
         cloud_msg.header.stamp = nh_->get_clock()->now();
@@ -338,6 +399,11 @@ namespace rog_map {
                     vm_.esdf_pub = nh_->create_publisher<sensor_msgs::msg::PointCloud2>("rog_map/esdf", qos);
                     // vm_.esdf_neg_pub = nh_->create_publisher<sensor_msgs::msg::PointCloud2>("rog_map/esdf/neg", qos);
                     // vm_.esdf_occ_pub = nh_->create_publisher<sensor_msgs::msg::PointCloud2>("rog_map/esdf/occ", qos);
+                }
+
+                if (cfg_.projection.enable) {
+                    vm_.proj2d_pub = nh_->create_publisher<nav_msgs::msg::OccupancyGrid>("rog_map/proj2d", qos);
+                    vm_.proj2d_sdf_pub = nh_->create_publisher<sensor_msgs::msg::PointCloud2>("rog_map/proj2d_sdf", qos);
                 }
 
                 if (cfg_.viz_time_rate > 0) {

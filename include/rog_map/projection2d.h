@@ -9,27 +9,27 @@
 #include <Eigen/Core>
 
 namespace rog_map {
-    //调试信息
-    struct MinZResult {
+
+//调试信息
+struct MinZResult {
     double distance = 0.0;   
-    bool   valid    = false; 
-    bool   blocked  = false; 
-    int    n_sampled = 0;
-    int    n_blocked = 0; 
+    bool   valid    = false; // 柱内是否取到过有效采样
+    bool   blocked  = false; // 是否存在 d_3D < 0 的采样（该柱不可通过）
+    int    n_sampled = 0;    // 有效采样数
+    int    n_blocked = 0;    // 其中 d_3D < 0 的数量
 };
 
-    struct MinZConfig {
-    bool enable = false;
-    // double scan_z_min_rel = -0.05; // 扫描带下沿，相对 odom 的 z（米）
-    // double scan_z_max_rel =  0.60; // 扫描带上沿，相对 odom 的 z（米）
+/// 归约配置
+struct MinZConfig {
+    bool   enable = false;
     double max_distance   =  6.0;  // 正距离截断上限
-    double min_distance   = -3.0;  //负距离截断下限
+    double min_distance   = -3.0;  // 负距离截断下限
     bool   clamp_distance = true;
-    // double inflation_radius = 0.0; // 整体外推，等效给障碍加半径
-    double far_distance   = 10.0;  //带内无任何有效采样时的兜底值
-    MinZConfig projection;
-    Field2D    field_;
+    double far_distance   = 10.0;  // 带内无任何有效采样时的兜底值
 };
+
+/// ── 纯函数：对一个柱子的 3D 距离序列取 min ──
+/// 单元测试只测它。不碰地图、不碰索引，纯逻辑。
 inline MinZResult reduceMinZ(const std::vector<double> &col, const MinZConfig &cfg) {
     MinZResult r;
     double best = std::numeric_limits<double>::max();
@@ -54,41 +54,38 @@ inline MinZResult reduceMinZ(const std::vector<double> &col, const MinZConfig &c
     r.valid   = true;
     r.blocked = (r.n_blocked > 0);
 
-//     double v = best - cfg.inflation_radius;
-//     if (!std::isfinite(v)) {
-//         v = cfg.far_distance;
-//     }
-//     if (cfg.clamp_distance) {
-//         v = std::clamp(v, std::min(0.0, cfg.min_distance), std::max(0.1, cfg.max_distance));
-//     }
-//     r.distance = v;
-//     return r;
-// }
+    double v = best;
+    if (cfg.clamp_distance) {
+        v = std::clamp(v, std::min(0.0, cfg.min_distance), std::max(0.1, cfg.max_distance));
+    }
+    r.distance = v;
+    return r;
+}
 
-    double v=best;
+// 2D 距离场容器
+class Field2D {
+public:
+    void update(int width, int height, double resolution, const Eigen::Vector2d &origin,
+                std::vector<double> dist_m, std::vector<uint8_t> occupied);
 
-    class Field2D {
-    public:
-        void update(int width, int height, double resolution, const Eigen::Vector2d &origin,
-                    std::vector<double> dist_m, std::vector<uint8_t> occupied);
+    // 世界坐标查询。dist 正值自由、负值障碍内。越界返回 false。
+    bool evaluate(const Eigen::Vector2d &pos, double &dist) const;
 
-        bool evaluate(const Eigen::Vector2d &pos, double &dist) const;
+    int width()  const { return width_; }
+    int height() const { return height_; }
+    double resolution() const { return resolution_; }
+    double maxDistance() const { return max_distance_; }
+    const Eigen::Vector2d &origin() const { return origin_; }
+    const std::vector<double>   &distances() const { return dist_m_; }
+    const std::vector<uint8_t>  &occupied()  const { return occ_; }
 
-        int width()  const { return width_; }
-        int height() const { return height_; }
-        double resolution() const { return resolution_; }
-        double maxDistance() const { return max_distance_; }
-        const Eigen::Vector2d &origin() const { return origin_; }
-        const std::vector<double>   &distances() const { return dist_m_; }
-        const std::vector<uint8_t>  &occupied()  const { return occ_; }
-
-    private:
-        int width_ = 0, height_ = 0;
-        double resolution_ = 0.0, max_distance_ = 0.0;
-        Eigen::Vector2d origin_ = Eigen::Vector2d::Zero();
-        std::vector<double>  dist_m_;
-        std::vector<uint8_t> occ_;   ///< 1 = blocked（d_2D < 0），0 = 可通过
-        mutable std::mutex mutex_;
+private:
+    int width_ = 0, height_ = 0;
+    double resolution_ = 0.0, max_distance_ = 0.0;
+    Eigen::Vector2d origin_ = Eigen::Vector2d::Zero();
+    std::vector<double>  dist_m_;
+    std::vector<uint8_t> occ_;   ///< 1 = blocked（d_2D < 0），0 = 可通过
+    mutable std::mutex mutex_;
 };
-    
-};
+
+}  // namespace rog_map

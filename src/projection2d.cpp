@@ -30,7 +30,7 @@ bool Field2D::evaluate(const Eigen::Vector2d &pos, double &dist) const {
     if (width_ <= 0 || height_ <= 0) {
         return false;
     }
-    const int x = static_cast<int>(std::floor((pos.x() - origin_.x()) / resolution_));
+    const int x = static_cast<int>(std::floor((pos.x() - origin_.x()) / resolution_));//世界坐标系到格子号
     const int y = static_cast<int>(std::floor((pos.y() - origin_.y()) / resolution_));
     if (x < 0 || x >= width_ || y < 0 || y >= height_) {
         return false;
