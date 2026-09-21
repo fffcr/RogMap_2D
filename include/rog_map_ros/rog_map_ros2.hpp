@@ -276,7 +276,7 @@ namespace rog_map {
             }
         }
 
-        if (cfg_.projection.enable && vm_.proj2d_sdf_pub->get_subscription_count() >= 1) {
+        if (cfg_.projection.enable && cfg_.projection.output_esdf && vm_.proj2d_sdf_pub->get_subscription_count() >= 1) {
         const Field2D &f = getField2D();
         const int w = f.width(), h = f.height();
         const double res = f.resolution();
