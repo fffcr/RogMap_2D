@@ -25,6 +25,7 @@
 
 #include <rog_map/rog_map_core/common_lib.hpp>
 #include <super_utils/yaml_loader.hpp>
+#include <rog_map/projection2d.h>
 
 #ifndef ORIGIN_AT_CORNER
 #ifndef ORIGIN_AT_CENTER
@@ -211,6 +212,14 @@ namespace rog_map {
             loader.LoadParam(name_space + "/virtual_ground_height", virtual_ground_height, -0.1);
             loader.LoadParam(name_space + "/virtual_ceil_height", virtual_ceil_height, -0.1);
 
+            loader.LoadParam(name_space + "/projection/enable",          projection.enable,          false);
+    loader.LoadParam(name_space + "/projection/scan_z_min_rel",  projection.scan_z_min_rel, -0.05);
+    loader.LoadParam(name_space + "/projection/scan_z_max_rel",  projection.scan_z_max_rel,  0.60);
+    loader.LoadParam(name_space + "/projection/max_distance",    projection.max_distance,     6.0);
+    loader.LoadParam(name_space + "/projection/min_distance",    projection.min_distance,    -3.0);
+    loader.LoadParam(name_space + "/projection/clamp_distance",  projection.clamp_distance,  true);
+    loader.LoadParam(name_space + "/projection/inflation_radius",projection.inflation_radius, 0.0);
+
             resetMapSize();
 
             /// Probabilistic Update
@@ -345,6 +354,10 @@ namespace rog_map {
 
         double unk_thresh{};
         double map_sliding_thresh{};
+
+        bool projection_en{false};
+        double projection_z_min{0.05}, projection_z_max{0.60};
+        bool projection_unknown_as_occupied{true};
 
         void resetMapSize() {
             int inflation_ratio = ceil(inflation_resolution / resolution);

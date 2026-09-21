@@ -29,6 +29,7 @@
 #include <rog_map/free_cnt_map.h>
 #include <rog_map/esdf_map.h>
 #include <rog_map/rog_map_core/raycaster.h>
+#include <rog_map/projection2d.h>
 
 
 namespace rog_map {
@@ -98,6 +99,8 @@ namespace rog_map {
         void writeMapInfoToLog(std::ofstream &log_file);
 
         void updateProbMap(const PointCloud &cloud, const Pose &pose);
+
+        GridType getGridType2D(const double &x, const double &y) const;
 
     protected:
         rog_map::Config cfg_;

@@ -308,6 +308,7 @@ void ProbMap::slideAllMap(const rog_map::Vec3f& pos) {
 void ProbMap::updateProbMap(const PointCloud& cloud, const Pose& pose) {
     TimeConsuming tc("updateMap", false);
     const Vec3f& pos = pose.first;
+    cur_odom_ = pos;       //记录位姿信息
     time_consuming_[4] = cloud.size();
     if (cfg_.map_sliding_en && !insideLocalMap(pos) && raycast_data_.batch_update_counter == 0) {
         std::cout << YELLOW << " -- [ROGMapCore] cur_pose out of map range, reset the map." << RESET << std::endl;
@@ -355,6 +356,13 @@ void ProbMap::updateProbMap(const PointCloud& cloud, const Pose& pose) {
         esdf_map_->updateESDF3D(pos);
     }
 
+    //进行投影处理
+    if (cfg_.projection.enable && cfg_.esdf_en) {
+        TimeConsuming t_proj("buildField2D", false);
+        buildField2D();
+        time_consuming_[1] += 0.0;   
+    }
+
     /* For the first frame, clear all unknown around the robot */
     static bool first = true;
     if (first) {
@@ -395,6 +403,74 @@ GridType ProbMap::getGridType(Vec3i& id_g) const {
     else {
         return GridType::UNKNOWN;
     }
+}
+
+MinZResult ProbMap::queryCell2D(const double &x, const double &y) const {
+    MinZResult r;
+    if (!cfg_.projection.enable || !cfg_.esdf_en || !esdf_map_) {
+        return r;                                     // valid = false
+    }
+
+    Vec3f box_min_d, box_max_d;
+    esdf_map_->getUpdatedBbox(box_min_d, box_max_d);
+
+    // xy 必须在更新盒内
+    if (x < box_min_d.x() || x > box_max_d.x() ||
+        y < box_min_d.y() || y > box_max_d.y()) {
+        return r;
+    }
+
+    // ② 扫描带 = odom 相对带 ∩ 更新盒 z 范围
+    const double z_lo = std::max(cur_odom_.z() + cfg_.projection.scan_z_min_rel, box_min_d.z());
+    const double z_hi = std::min(cur_odom_.z() + cfg_.projection.scan_z_max_rel, box_max_d.z());
+    if (z_hi < z_lo) {
+        return r;
+    }
+
+    // z采样
+    const double dz = cfg_.esdf_resolution;           // ← 用 ESDF 的分辨率，不是 sc_.resolution
+    std::vector<double> col;
+    col.reserve(static_cast<size_t>((z_hi - z_lo) / dz) + 1);
+    for (double z = z_lo; z <= z_hi + 1e-9; z += dz) {
+        col.push_back(esdf_map_->getDistance(Vec3f(x, y, z)));
+    }
+
+    return reduceMinZ(col, cfg_.projection);
+}
+
+void ProbMap::buildField2D() {
+    if (!cfg_.projection.enable || !cfg_.esdf_en || !esdf_map_) {
+        return;
+    }
+
+    Vec3f box_min_d, box_max_d;
+    esdf_map_->getUpdatedBbox(box_min_d, box_max_d);
+
+    const double res = cfg_.esdf_resolution;
+    const int w = static_cast<int>((box_max_d.x() - box_min_d.x()) / res) + 1;
+    const int h = static_cast<int>((box_max_d.y() - box_min_d.y()) / res) + 1;
+    if (w <= 1 || h <= 1) {
+        return;
+    }
+    const Eigen::Vector2d origin(box_min_d.x(), box_min_d.y());
+
+    const size_t n = static_cast<size_t>(w) * static_cast<size_t>(h);
+    std::vector<double>  dist_m(n, cfg_.projection.far_distance);
+    std::vector<uint8_t> occ(n, 0U);
+
+    for (int j = 0; j < h; ++j) {
+        for (int i = 0; i < w; ++i) {
+            // 取格心（与 ORIGIN_AT_CORNER 的 floor 约定对齐）
+            const double x = origin.x() + (i + 0.5) * res;
+            const double y = origin.y() + (j + 0.5) * res;
+            const MinZResult r = queryCell2D(x, y);
+            const size_t idx = static_cast<size_t>(j) * static_cast<size_t>(w) + static_cast<size_t>(i);
+            dist_m[idx] = r.distance;
+            occ[idx]    = (r.valid && r.blocked) ? 1U : 0U;
+        }
+    }
+
+    field_.update(w, h, res, origin, std::move(dist_m), std::move(occ));
 }
 
 GridType ProbMap::getGridType(const Vec3f& pos) const {
