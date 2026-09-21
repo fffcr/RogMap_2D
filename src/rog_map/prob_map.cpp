@@ -420,14 +420,16 @@ MinZResult ProbMap::queryCell2D(const double &x, const double &y) const {
         return r;
     }
 
-    // ② 扫描带 = odom 相对带 ∩ 更新盒 z 范围
-    const double z_lo = std::max(cur_odom_.z() + cfg_.projection.scan_z_min_rel, box_min_d.z());
-    const double z_hi = std::min(cur_odom_.z() + cfg_.projection.scan_z_max_rel, box_max_d.z());
-    if (z_hi < z_lo) {
+    // 沿整个更新盒的 z 范围采样（min over z）
+    const double z_lo = box_min_d.z();
+    const double z_hi = box_max_d.z();
+
+    // 再确认落在 ESDF 的局部地图内（getHashIndexFromPos 越界会算错但不报错）
+    if (!esdf_map_->insideLocalMap(Vec3f(x, y, 0.5 * (z_lo + z_hi)))) {
         return r;
     }
 
-    // z采样
+    // 沿 z 采样
     const double dz = cfg_.esdf_resolution;           // ← 用 ESDF 的分辨率，不是 sc_.resolution
     std::vector<double> col;
     col.reserve(static_cast<size_t>((z_hi - z_lo) / dz) + 1);
@@ -452,7 +454,11 @@ void ProbMap::buildField2D() {
     if (w <= 1 || h <= 1) {
         return;
     }
-    const Eigen::Vector2d origin(box_min_d.x(), box_min_d.y());
+    // getUpdatedBbox() 在 ORIGIN_AT_CORNER 下返回的是格*心*（globalIndexToPos = (id+0.5)*res），
+    // 而 Field2D::evaluate / OccupancyGrid 的 origin 语义是格*角*，这里退回半格对齐。
+    // 不减这半格会让整张图沿 x、y 各偏一个 ESDF 格，且采样点正好压在格边界上（floor 逐格跳变）。
+    const Eigen::Vector2d origin(box_min_d.x() - 0.5 * res,
+                                 box_min_d.y() - 0.5 * res);
 
     const size_t n = static_cast<size_t>(w) * static_cast<size_t>(h);
     std::vector<double>  dist_m(n, cfg_.projection.far_distance);
@@ -460,7 +466,7 @@ void ProbMap::buildField2D() {
 
     for (int j = 0; j < h; ++j) {
         for (int i = 0; i < w; ++i) {
-            // 取格心（与 ORIGIN_AT_CORNER 的 floor 约定对齐）
+            // 取格心：origin 已是格角，+0.5*res 正好落在 ESDF 对应格的格心上
             const double x = origin.x() + (i + 0.5) * res;
             const double y = origin.y() + (j + 0.5) * res;
             const MinZResult r = queryCell2D(x, y);
