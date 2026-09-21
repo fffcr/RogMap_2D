@@ -216,6 +216,7 @@ namespace rog_map {
             loader.LoadParam(name_space + "/projection/max_distance",    projection.max_distance,     6.0);
             loader.LoadParam(name_space + "/projection/min_distance",    projection.min_distance,    -3.0);
             loader.LoadParam(name_space + "/projection/clamp_distance",  projection.clamp_distance,  true);
+            loader.LoadParam(name_space + "/projection/output_esdf",    projection.output_esdf,    false);
 
             resetMapSize();
 

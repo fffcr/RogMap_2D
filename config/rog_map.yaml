@@ -31,6 +31,8 @@ rog_map:
     max_distance: 6.0
     min_distance: -3.0
     clamp_distance: true
+    # 输出二选一: false = 2D栅格占用图(proj2d) / true = 2D距离场(proj2d_sdf)
+    output_esdf: false
 
 
 
