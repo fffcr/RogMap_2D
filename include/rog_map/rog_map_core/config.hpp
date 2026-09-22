@@ -353,9 +353,9 @@ namespace rog_map {
         double unk_thresh{};
         double map_sliding_thresh{};
 
-        /* 2D 距离场（min_z 归约） */
+        /* 2D 距离场（min_z 归约）配置项。注意：距离场数据本身是 ProbMap::field_，
+         * Field2D 内含 std::mutex，不可拷贝/移动，不能作为 Config 的成员。 */
         MinZConfig projection;
-        Field2D    field_;
 
         void resetMapSize() {
             int inflation_ratio = ceil(inflation_resolution / resolution);
