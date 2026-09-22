@@ -29,12 +29,17 @@ find_package(Eigen3 REQUIRED)
 find_package(PCL REQUIRED)
 find_package(yaml-cpp REQUIRED)
 
+find_package(pcl_ros REQUIRED)
+find_package(pcl_conversions REQUIRED)      
+find_package(tf2_ros REQUIRED)              
+
 file(GLOB_RECURSE srcs CONFIGURE_DEPENDS src/*.cpp include/*.h include/*.hpp include/*.cpp)
 add_library(rog_map STATIC ${srcs})
 
 target_include_directories(rog_map PUBLIC
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
         "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>"
+        ${pcl_conversions_INCLUDE_DIRS} 
 )
 
 target_link_libraries(rog_map PUBLIC
@@ -43,6 +48,7 @@ target_link_libraries(rog_map PUBLIC
         ${geometry_msgs_TARGETS}
         ${nav_msgs_TARGETS}
         ${visualization_msgs_TARGETS}
+        ${tf2_ros_TARGETS}                   
         ${message_filters_TARGETS}
         ${PCL_LIBRARIES}
         Eigen3::Eigen
