@@ -42,5 +42,5 @@ rog_map:
   ros_callback:
     enable: true
     cloud_topic: "/cloud_registered"
-    odom_topic: "/lidar_slam/odom"
+    odom_topic: "/Odometry"
     odom_timeout: 2.0
