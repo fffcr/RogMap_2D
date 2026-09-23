@@ -1,2 +1,0 @@
-/usr/bin/ar qc librog_map.a CMakeFiles/rog_map.dir/include/rog_map/rog_map_core/raycaster.cpp.o CMakeFiles/rog_map.dir/src/projection2d.cpp.o CMakeFiles/rog_map.dir/src/rog_map/counter_map.cpp.o CMakeFiles/rog_map.dir/src/rog_map/esdf_map.cpp.o CMakeFiles/rog_map.dir/src/rog_map/inf_map.cpp.o CMakeFiles/rog_map.dir/src/rog_map/prob_map.cpp.o CMakeFiles/rog_map.dir/src/rog_map/rog_map.cpp.o CMakeFiles/rog_map.dir/src/rog_map/sliding_map.cpp.o CMakeFiles/rog_map.dir/src/rog_map_ros/rog_map_ros1.cpp.o
-/usr/bin/ranlib librog_map.a
