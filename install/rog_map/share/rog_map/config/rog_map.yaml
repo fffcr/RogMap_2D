@@ -1,0 +1,95 @@
+rog_map:
+  resolution: 0.1
+  inaflation_resolution: 0.1
+  inflation_step: 0
+  unk_inflation_en: false
+  unk_inflation_step: 1
+  map_size: [ 50,50,6 ]
+  # If the map rolling is disable, the map origin [m] should be set.
+  fix_map_origin: [ 0,0,1.5 ]
+  frontier_extraction_en: false
+
+  # Virtual ceil and ground
+  virtual_ceil_height: 1.0
+  virtual_ground_height: -0.5
+
+  load_pcd_en: false
+
+  raycasting:
+    enable: true
+    # 每批处理几帧点云；1 = 不攒批，延迟最低。
+    batch_update_size: 1
+    # 射线有效距离 [min, max] m。min 过大会忽略近处点（车体贴障碍物时很致命）。
+    ray_range: [ 0.03, 10 ]
+    # 局部更新盒 [m]，随 odom 走。默认 999 会被夹到整个局部地图，射线裁剪变松。
+    local_update_box: [ 10, 10, 2.5 ]
+    # UNKNOWN/FREE/OCCUPIED 判定用的未知体素占比阈值。
+    unk_thresh: 0.70
+    # 命中一次 / 穿过一次的 log-odds 增量。p_hit=0.9 → +2.197，一次命中即判占据；
+    # p_miss=0.45 → -0.201，清除较慢（动态障碍残留久），想清得快可调到 0.30。
+    p_hit: 0.9
+    p_miss: 0.45
+    # log-odds 的 clamp 上下界。
+    p_min: 0.12
+    p_max: 0.97
+    # 最终二值化阈值：FREE < p_free，OCCUPIED > p_occ，中间为 UNKNOWN。
+    p_occ: 0.85
+    p_free: 0.499
+
+  map_sliding:
+    enable: true
+    # The minimum distance [m] to slide the map.
+    threshold: 0.3
+
+  esdf:
+    enable: true
+    resolution: 0.1
+    # The range of esdf around the odom [m].
+    local_update_box: [ 12,12,1.6 ]
+
+  projection:
+    enable: true
+    max_distance: 6.0
+    min_distance: -3.0
+    clamp_distance: true
+    
+    # 投影高度带，odom 系（相对机器人），实际采样区间 = odom.z + [z_min, z_max]。
+    # 车体在雷达下方的那一段是负的，例如雷达装高 0.5 m、车体占地面以上 0~0.7 m，
+    # 则填 -0.5 / 0.2。实际生效区间还要和 esdf.local_update_box 的 z 求交。
+    z_min: -0.5
+    z_max: 0.2
+    # 输出二选一: false = 2D栅格占用图(proj2d) / true = 2D距离场(proj2d_sdf)
+    output_esdf: true
+
+  # 注意：proj2d / esdf / occ 这些发布者是在 rog_map_ros2.hpp 的
+  # `if (cfg_.visualization_en)` 里建的，projection.enable 只管算不算。
+  # 所以这里保持 false 的话 /rog_map/proj2d 根本不会出现。
+  visualization:
+    enable: true
+    # when enabled, use rqt_reconfigure to change the visualization parameters.
+    use_dynamic_reconfigure: false
+    # The rate of visualization [Hz], if set to 0, the visualization will not be triggered by frame.
+    time_rate: 2
+    # The frame rate of visualization [Hz], if set to 0, the visualization will not be triggered by frame.
+    frame_rate: 0
+    # visualization range along the odom [m]. 任一维 <= 0 会直接把整个 visualization 关掉
+    range: [ 15, 15, 4 ]
+    # 必须和 odom / cloud 的实际 frame 一致。FAST-LIO 发的是 camera_init。
+    # rog_map 不做任何 TF 变换，这里只是给发布出去的消息贴标签。
+    frame_id: "camera_init"
+    pub_unknown_map_en: false
+    # 由 rog_map 自己广播 odom 的 TF。FAST-LIO 已经在发 camera_init -> body，
+    # 两边同时发 tf2 会报 multiple authority，所以默认关。
+    # 单独跑 rog_map 调试、没有别的节点发 TF 时再打开。
+    pub_odom_tf: false
+
+
+
+
+  # If [enable = true], the ROG-Map will actively take ros topic as input.
+  #  else user should call function [updateMap] to update the map.
+  ros_callback:
+    enable: true
+    cloud_topic: "/cloud_registered"
+    odom_topic: "/Odometry"
+    odom_timeout: 2.0

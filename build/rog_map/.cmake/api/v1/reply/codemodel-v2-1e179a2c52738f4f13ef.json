@@ -1,0 +1,88 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Release-e861a8b0aa88e12a84d3.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.15"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"name" : "Release",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "rog_map",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "rog_map::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-rog_map-Release-973e6571b91447641e64.json",
+					"name" : "rog_map",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "rog_map_node::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-rog_map_node-Release-53fd775dc8e08fdcd566.json",
+					"name" : "rog_map_node",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "rog_map_uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-rog_map_uninstall-Release-a59d9af10cb3f2857886.json",
+					"name" : "rog_map_uninstall",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-uninstall-Release-121557524fc61fbcd906.json",
+					"name" : "uninstall",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/build/rog_map",
+		"source" : "/home/rmadmin/Nav27/ObsMap/src/RogMap_2D"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 6
+	}
+}

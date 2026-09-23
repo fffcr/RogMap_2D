@@ -1,0 +1,334 @@
+[0.012s] Invoking command in '/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/build/rog_map': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/rmadmin/Nav27/ObsMap/src/RogMap_2D -DCMAKE_INSTALL_PREFIX=/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map
+[0.072s] -- The C compiler identification is GNU 13.3.0
+[0.131s] -- The CXX compiler identification is GNU 13.3.0
+[0.152s] -- Detecting C compiler ABI info
+[0.256s] -- Detecting C compiler ABI info - done
+[0.268s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.268s] -- Detecting C compile features
+[0.268s] -- Detecting C compile features - done
+[0.276s] -- Detecting CXX compiler ABI info
+[0.398s] -- Detecting CXX compiler ABI info - done
+[0.411s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.411s] -- Detecting CXX compile features
+[0.412s] -- Detecting CXX compile features - done
+[0.430s] -- Found ament_cmake: 2.5.6 (/opt/ros/jazzy/share/ament_cmake/cmake)
+[0.614s] -- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter 
+[0.778s] -- Found rclcpp: 28.1.22 (/opt/ros/jazzy/share/rclcpp/cmake)
+[0.832s] -- Found rosidl_generator_c: 4.6.9 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)
+[0.849s] -- Found rosidl_generator_cpp: 4.6.9 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)
+[0.875s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.897s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[1.007s] -- Found rmw_implementation_cmake: 7.3.3 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)
+[1.012s] -- Found rmw_fastrtps_cpp: 8.4.4 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)
+[1.129s] -- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.13")  
+[1.156s] -- Found FastRTPS: /opt/ros/jazzy/include (Required is at least version "2.13") 
+[1.188s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[1.278s] -- Found std_msgs: 5.3.8 (/opt/ros/jazzy/share/std_msgs/cmake)
+[1.292s] -- Found pcl_ros: 2.6.5 (/opt/ros/jazzy/share/pcl_ros/cmake)
+[1.419s] -- Found flann version 1.9.2
+[1.809s] -- Found OpenMP_CXX: -fopenmp (found version "4.5") 
+[1.810s] -- Found OpenMP: TRUE (found version "4.5") found components: CXX 
+[3.503s] -- Checking for module 'libusb-1.0'
+[3.526s] --   Found libusb-1.0, version 1.0.27
+[3.581s] -- Found libusb: /usr/lib/x86_64-linux-gnu/libusb-1.0.so  
+[3.582s] -- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+[3.682s] -- OpenNI2 found (version: 2.2.0.33, include: /usr/include/openni2, lib: /usr/lib/x86_64-linux-gnu/libOpenNI2.so;libusb::libusb)
+[3.685s] -- Could NOT find Pcap (missing: PCAP_LIBRARIES PCAP_INCLUDE_DIRS) 
+[3.699s] -- Found ZLIB: /usr/lib/x86_64-linux-gnu/libz.so (found version "1.3")  
+[3.718s] -- Found PNG: /usr/lib/x86_64-linux-gnu/libpng.so (found version "1.6.43") 
+[4.242s] -- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+[4.254s] -- OpenNI2 found (version: 2.2.0.33, include: /usr/include/openni2, lib: /usr/lib/x86_64-linux-gnu/libOpenNI2.so;libusb::libusb)
+[4.775s] -- Found Qhull version 8.0.2
+[5.316s] -- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+[5.772s] -- Found PCL_COMMON: /usr/lib/x86_64-linux-gnu/libpcl_common.so  
+[5.774s] -- Found PCL_KDTREE: /usr/lib/x86_64-linux-gnu/libpcl_kdtree.so  
+[5.776s] -- Found PCL_OCTREE: /usr/lib/x86_64-linux-gnu/libpcl_octree.so  
+[5.777s] -- Found PCL_SEARCH: /usr/lib/x86_64-linux-gnu/libpcl_search.so  
+[5.778s] -- Found PCL_SAMPLE_CONSENSUS: /usr/lib/x86_64-linux-gnu/libpcl_sample_consensus.so  
+[5.779s] -- Found PCL_FILTERS: /usr/lib/x86_64-linux-gnu/libpcl_filters.so  
+[5.779s] -- Found PCL_2D: /usr/include/pcl-1.14  
+[5.780s] -- Found PCL_GEOMETRY: /usr/include/pcl-1.14  
+[5.781s] -- Found PCL_IO: /usr/lib/x86_64-linux-gnu/libpcl_io.so  
+[5.782s] -- Found PCL_FEATURES: /usr/lib/x86_64-linux-gnu/libpcl_features.so  
+[5.783s] -- Found PCL_ML: /usr/lib/x86_64-linux-gnu/libpcl_ml.so  
+[5.784s] -- Found PCL_SEGMENTATION: /usr/lib/x86_64-linux-gnu/libpcl_segmentation.so  
+[5.786s] -- Found PCL_VISUALIZATION: /usr/lib/x86_64-linux-gnu/libpcl_visualization.so  
+[5.788s] -- Found PCL_SURFACE: /usr/lib/x86_64-linux-gnu/libpcl_surface.so  
+[5.791s] -- Found PCL_REGISTRATION: /usr/lib/x86_64-linux-gnu/libpcl_registration.so  
+[5.794s] -- Found PCL_KEYPOINTS: /usr/lib/x86_64-linux-gnu/libpcl_keypoints.so  
+[5.795s] -- Found PCL_TRACKING: /usr/lib/x86_64-linux-gnu/libpcl_tracking.so  
+[5.796s] -- Found PCL_RECOGNITION: /usr/lib/x86_64-linux-gnu/libpcl_recognition.so  
+[5.797s] -- Found PCL_STEREO: /usr/lib/x86_64-linux-gnu/libpcl_stereo.so  
+[5.798s] -- Found PCL_APPS: /usr/lib/x86_64-linux-gnu/libpcl_apps.so  
+[5.798s] -- Found PCL_IN_HAND_SCANNER: /usr/include/pcl-1.14  
+[5.798s] -- Found PCL_MODELER: /usr/include/pcl-1.14  
+[5.799s] -- Found PCL_POINT_CLOUD_EDITOR: /usr/include/pcl-1.14  
+[5.799s] -- Found PCL_OUTOFCORE: /usr/lib/x86_64-linux-gnu/libpcl_outofcore.so  
+[5.800s] -- Found PCL_PEOPLE: /usr/lib/x86_64-linux-gnu/libpcl_people.so  
+[5.979s] -- Found eigen3_cmake_module: 0.3.1 (/opt/ros/jazzy/share/eigen3_cmake_module/cmake)
+[5.981s] -- Found Eigen3: TRUE (found version "3.4.0") 
+[5.981s] -- Ensuring Eigen3 include directory is part of orocos-kdl CMake target
+[5.988s] -- Found nav_msgs: 5.3.8 (/opt/ros/jazzy/share/nav_msgs/cmake)
+[6.012s] -- Found visualization_msgs: 5.3.8 (/opt/ros/jazzy/share/visualization_msgs/cmake)
+[6.170s] -- Configuring done (6.2s)
+[6.223s] -- Generating done (0.0s)
+[6.232s] -- Build files have been written to: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/build/rog_map
+[6.272s] Invoked command in '/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/build/rog_map' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/rmadmin/Nav27/ObsMap/src/RogMap_2D -DCMAKE_INSTALL_PREFIX=/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map
+[6.274s] Invoking command in '/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/build/rog_map': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/build/rog_map -- -j16 -l16
+[6.363s] [ 16%] [32mBuilding CXX object CMakeFiles/rog_map.dir/src/rog_map/inf_map.cpp.o[0m
+[6.363s] [ 16%] [32mBuilding CXX object CMakeFiles/rog_map.dir/src/rog_map/esdf_map.cpp.o[0m
+[6.363s] [ 41%] [32mBuilding CXX object CMakeFiles/rog_map.dir/src/rog_map/counter_map.cpp.o[0m
+[6.363s] [ 41%] [32mBuilding CXX object CMakeFiles/rog_map.dir/include/rog_map/rog_map_core/raycaster.cpp.o[0m
+[6.363s] [ 41%] [32mBuilding CXX object CMakeFiles/rog_map.dir/src/projection2d.cpp.o[0m
+[6.363s] [ 58%] [32mBuilding CXX object CMakeFiles/rog_map.dir/src/rog_map/sliding_map.cpp.o[0m
+[6.364s] [ 58%] [32mBuilding CXX object CMakeFiles/rog_map.dir/src/rog_map/prob_map.cpp.o[0m
+[6.364s] [ 75%] [32mBuilding CXX object CMakeFiles/rog_map.dir/src/rog_map/rog_map.cpp.o[0m
+[6.364s] [ 75%] [32mBuilding CXX object CMakeFiles/rog_map.dir/src/rog_map_ros/rog_map_ros1.cpp.o[0m
+[19.851s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/src/rog_map/rog_map.cpp:[m[K In member function ‘[01m[Kvoid rog_map::ROGMap::[01;32m[Kinit[m[K()[m[K’:
+[19.852s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/src/rog_map/rog_map.cpp:53:23:[m[K [01;35m[Kwarning: [m[Kcomparison of integer expressions of different signedness: ‘[01m[Kint[m[K’ and ‘[01m[Kstd::vector<std::__cxx11::basic_string<char>, std::allocator<std::__cxx11::basic_string<char> > >::size_type[m[K’ {aka ‘[01m[Klong unsigned int[m[K’} [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wsign-compare-Wsign-compare]8;;[m[K]
+[19.852s]    53 |     for (int i = 0; [01;35m[Ki < time_consuming_name_.size()[m[K; i++) {
+[19.852s]       |                     [01;35m[K~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[19.853s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/src/rog_map/rog_map.cpp:55:15:[m[K [01;35m[Kwarning: [m[Kcomparison of integer expressions of different signedness: ‘[01m[Kint[m[K’ and ‘[01m[Kstd::vector<std::__cxx11::basic_string<char>, std::allocator<std::__cxx11::basic_string<char> > >::size_type[m[K’ {aka ‘[01m[Klong unsigned int[m[K’} [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wsign-compare-Wsign-compare]8;;[m[K]
+[19.853s]    55 |         if ([01;35m[Ki != time_consuming_name_.size() - 1[m[K) {
+[19.853s]       |             [01;35m[K~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[20.370s] In file included from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/raycaster.h:30[m[K,
+[20.371s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/raycaster.cpp:24[m[K:
+[20.371s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/common_lib.hpp:120:17:[m[K [01;35m[Kwarning: [m[K‘[01m[Kbool rog_map::[01;32m[KlineIntersectBox[m[K(super_utils::Vec3f, super_utils::Vec3f, super_utils::Vec3f, super_utils::Vec3f, super_utils::Vec3f&)[m[K’ defined but not used [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-function-Wunused-function]8;;[m[K]
+[20.371s]   120 |     static bool [01;35m[KlineIntersectBox[m[K(super_utils::Vec3f L1, super_utils::Vec3f L2, super_utils::Vec3f B1,
+[20.371s]       |                 [01;35m[K^~~~~~~~~~~~~~~~[m[K
+[20.371s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/common_lib.hpp:76:31:[m[K [01;35m[Kwarning: [m[K‘[01m[Ksuper_utils::Vec3f rog_map::[01;32m[KlineBoxIntersectPoint[m[K(const super_utils::Vec3f&, const super_utils::Vec3f&, const super_utils::Vec3f&, const super_utils::Vec3f&)[m[K’ defined but not used [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-function-Wunused-function]8;;[m[K]
+[20.371s]    76 |     static super_utils::Vec3f [01;35m[KlineBoxIntersectPoint[m[K(const super_utils::Vec3f& pt, const super_utils::Vec3f& pos,
+[20.371s]       |                               [01;35m[K^~~~~~~~~~~~~~~~~~~~~[m[K
+[20.372s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/common_lib.hpp:65:19:[m[K [01;35m[Kwarning: [m[K‘[01m[Kdouble rog_map::[01;32m[KcomputePathLength[m[K(super_utils::vec_E<Eigen::Matrix<double, 3, 1> >&)[m[K’ defined but not used [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-function-Wunused-function]8;;[m[K]
+[20.372s]    65 |     static double [01;35m[KcomputePathLength[m[K(const super_utils::vec_E<super_utils::Vec3f>& path) {
+[20.372s]       |                   [01;35m[K^~~~~~~~~~~~~~~~~[m[K
+[21.535s] [01m[Kcc1plus:[m[K [01;36m[Knote: [m[Kunrecognized command-line option ‘[01m[K-Wno-dev[m[K’ may have been intended to silence earlier diagnostics
+[21.734s] In file included from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/fmt/format.h:48[m[K,
+[21.734s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/super_utils/fmt_eigen.hpp:28[m[K,
+[21.734s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/common_lib.hpp:38[m[K,
+[21.734s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/config.hpp:26[m[K,
+[21.735s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/sliding_map.h:26[m[K,
+[21.735s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/counter_map.h:27[m[K,
+[21.735s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/inf_map.h:26[m[K,
+[21.735s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/prob_map.h:28[m[K,
+[21.735s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map.h:26[m[K,
+[21.735s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/src/rog_map/rog_map.cpp:24[m[K:
+[21.735s] /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/fmt/core.h: In substitution of ‘[01m[Ktemplate<class T, class Context> using fmt::v9::detail::mapped_type_constant = fmt::v9::detail::type_constant<decltype (fmt::v9::detail::arg_mapper<Context>().map(declval<const T&>())), typename Context::char_type> [35m[K[with T = super_utils::GridType; Context = fmt::v9::basic_format_context<fmt::v9::appender, char>][m[K[m[K’:
+[21.735s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/fmt/core.h:1730:41:[m[K   recursively required from ‘[01m[Kconstexpr long long unsigned int fmt::v9::detail::[01;32m[Kencode_types[m[K() [35m[K[with Context = fmt::v9::basic_format_context<fmt::v9::appender, char>; Arg = Eigen::Transpose<const Eigen::Matrix<double, 3, 1> >; Args = {super_utils::GridType, bool}][m[K[m[K’
+[21.735s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/fmt/core.h:1730:41:[m[K   required from ‘[01m[Kconstexpr long long unsigned int fmt::v9::detail::[01;32m[Kencode_types[m[K() [35m[K[with Context = fmt::v9::basic_format_context<fmt::v9::appender, char>; Arg = long unsigned int; Args = {Eigen::Transpose<const Eigen::Matrix<double, 3, 1, 0, 3, 1> >, super_utils::GridType, bool}][m[K[m[K’
+[21.736s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/fmt/core.h:1886:58:[m[K   required from ‘[01m[Kconstexpr const long long unsigned int fmt::v9::format_arg_store<fmt::v9::basic_format_context<fmt::v9::appender, char>, long unsigned int, Eigen::Transpose<const Eigen::Matrix<double, 3, 1, 0, 3, 1> >, super_utils::GridType, bool>::desc[m[K’
+[21.736s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/fmt/core.h:1999:63:[m[K   required from ‘[01m[Kconstexpr fmt::v9::basic_format_args<Context>::[01;32m[Kbasic_format_args[m[K(const fmt::v9::format_arg_store<Context, Args ...>&) [35m[K[with Args = {long unsigned int, Eigen::Transpose<const Eigen::Matrix<double, 3, 1, 0, 3, 1> >, super_utils::GridType, bool}; Context = fmt::v9::basic_format_context<fmt::v9::appender, char>][m[K[m[K’
+[21.736s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/fmt/color.h:510:9:[m[K   required from ‘[01m[Kvoid fmt::v9::[01;32m[Kprint[m[K(FILE*, const text_style&, const S&, const Args& ...) [35m[K[with S = char [111]; Args = {long unsigned int, Eigen::Transpose<const Eigen::Matrix<double, 3, 1, 0, 3, 1> >, super_utils::GridType, bool}; typename std::enable_if<detail::is_string<S>::value, int>::type <anonymous> = 0; FILE = FILE][m[K[m[K’
+[21.736s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/fmt/color.h:528:15:[m[K   required from ‘[01m[Kvoid fmt::v9::[01;32m[Kprint[m[K(const text_style&, const S&, const Args& ...) [35m[K[with S = char [111]; Args = {long unsigned int, Eigen::Transpose<const Eigen::Matrix<double, 3, 1, 0, 3, 1> >, super_utils::GridType, bool}; typename std::enable_if<detail::is_string<S>::value, int>::type <anonymous> = 0][m[K[m[K’
+[21.736s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/src/rog_map/rog_map.cpp:126:15:[m[K   required from here
+[21.736s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/fmt/core.h:1530:53:[m[K [01;35m[Kwarning: [m[K‘[01m[Kconstexpr decltype (declval<fmt::v9::detail::arg_mapper<Context> >().map(static_cast<fmt::v9::underlying_t<T> >(val))) fmt::v9::detail::arg_mapper<Context>::[01;32m[Kmap[m[K(const T&) [35m[K[with T = super_utils::GridType; typename std::enable_if<((((std::is_enum<U>::value && std::is_convertible<T, int>::value) && (! fmt::v9::detail::has_format_as<T>::value)) && (! std::is_constructible<typename Context::formatter_type<T> >::value)) && (! fmt::v9::detail::has_fallback_formatter<T, typename Context::char_type>::value)), int>::type <anonymous> = 0; Context = fmt::v9::basic_format_context<fmt::v9::appender, char>; decltype (declval<fmt::v9::detail::arg_mapper<Context> >().map(static_cast<fmt::v9::underlying_t<T> >(val))) = unsigned int; fmt::v9::detail::arg_mapper<Context> = fmt::v9::detail::arg_mapper<fmt::v9::basic_format_context<fmt::v9::appender, char> >; fmt::v9::underlying_t<T> = unsigned int][m[K[m[K’ is deprecated [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wdeprecated-declarations-Wdeprecated-declarations]8;;[m[K]
+[21.736s]  1530 |     type_constant<decltype([01;35m[Karg_mapper<Context>().map(std::declval<const T&>())[m[K),
+[21.736s]       |                            [01;35m[K~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[21.737s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/fmt/core.h:1470:48:[m[K [01;36m[Knote: [m[Kdeclared here
+[21.737s]  1470 |   FMT_DEPRECATED FMT_CONSTEXPR FMT_INLINE auto [01;36m[Kmap[m[K(const T& val)
+[21.737s]       |                                                [01;36m[K^~~[m[K
+[24.573s] In file included from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/config.hpp:26[m[K,
+[24.573s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/sliding_map.h:26[m[K,
+[24.573s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/counter_map.h:27[m[K,
+[24.573s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/inf_map.h:26[m[K,
+[24.573s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/src/rog_map/inf_map.cpp:24[m[K:
+[24.573s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/common_lib.hpp:120:17:[m[K [01;35m[Kwarning: [m[K‘[01m[Kbool rog_map::[01;32m[KlineIntersectBox[m[K(super_utils::Vec3f, super_utils::Vec3f, super_utils::Vec3f, super_utils::Vec3f, super_utils::Vec3f&)[m[K’ defined but not used [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-function-Wunused-function]8;;[m[K]
+[24.574s]   120 |     static bool [01;35m[KlineIntersectBox[m[K(super_utils::Vec3f L1, super_utils::Vec3f L2, super_utils::Vec3f B1,
+[24.574s]       |                 [01;35m[K^~~~~~~~~~~~~~~~[m[K
+[24.574s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/common_lib.hpp:76:31:[m[K [01;35m[Kwarning: [m[K‘[01m[Ksuper_utils::Vec3f rog_map::[01;32m[KlineBoxIntersectPoint[m[K(const super_utils::Vec3f&, const super_utils::Vec3f&, const super_utils::Vec3f&, const super_utils::Vec3f&)[m[K’ defined but not used [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-function-Wunused-function]8;;[m[K]
+[24.575s]    76 |     static super_utils::Vec3f [01;35m[KlineBoxIntersectPoint[m[K(const super_utils::Vec3f& pt, const super_utils::Vec3f& pos,
+[24.576s]       |                               [01;35m[K^~~~~~~~~~~~~~~~~~~~~[m[K
+[24.576s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/common_lib.hpp:65:19:[m[K [01;35m[Kwarning: [m[K‘[01m[Kdouble rog_map::[01;32m[KcomputePathLength[m[K(super_utils::vec_E<Eigen::Matrix<double, 3, 1> >&)[m[K’ defined but not used [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-function-Wunused-function]8;;[m[K]
+[24.576s]    65 |     static double [01;35m[KcomputePathLength[m[K(const super_utils::vec_E<super_utils::Vec3f>& path) {
+[24.576s]       |                   [01;35m[K^~~~~~~~~~~~~~~~~[m[K
+[24.702s] /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/fmt/core.h: In instantiation of ‘[01m[Kconstexpr fmt::v9::detail::value<Context> fmt::v9::detail::[01;32m[Kmake_value[m[K(T&&) [35m[K[with Context = fmt::v9::basic_format_context<fmt::v9::appender, char>; T = const super_utils::GridType&][m[K[m[K’:
+[24.703s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/fmt/core.h:1777:29:[m[K   required from ‘[01m[Kconstexpr fmt::v9::detail::value<Context> fmt::v9::detail::[01;32m[Kmake_arg[m[K(T&&) [35m[K[with bool IS_PACKED = true; Context = fmt::v9::basic_format_context<fmt::v9::appender, char>; type <anonymous> = fmt::v9::detail::type::uint_type; T = const super_utils::GridType&; typename std::enable_if<IS_PACKED, int>::type <anonymous> = 0][m[K[m[K’
+[24.703s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/fmt/core.h:1901:77:[m[K   required from ‘[01m[Kconstexpr fmt::v9::format_arg_store<Context, Args>::[01;32m[Kformat_arg_store[m[K(T&& ...) [35m[K[with T = {const long unsigned int&, const Eigen::Transpose<const Eigen::Matrix<double, 3, 1, 0, 3, 1> >&, const super_utils::GridType&, const bool&}; Context = fmt::v9::basic_format_context<fmt::v9::appender, char>; Args = {long unsigned int, Eigen::Transpose<const Eigen::Matrix<double, 3, 1, 0, 3, 1> >, super_utils::GridType, bool}][m[K[m[K’
+[24.703s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/fmt/core.h:1918:31:[m[K   required from ‘[01m[Kconstexpr fmt::v9::format_arg_store<Context, typename std::remove_cv<typename std::remove_reference<Args>::type>::type ...> fmt::v9::[01;32m[Kmake_format_args[m[K(Args&& ...) [35m[K[with Context = basic_format_context<appender, char>; Args = {const long unsigned int&, const Eigen::Transpose<const Eigen::Matrix<double, 3, 1, 0, 3, 1> >&, const super_utils::GridType&, const bool&}][m[K[m[K’
+[24.703s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/fmt/color.h:511:58:[m[K   required from ‘[01m[Kvoid fmt::v9::[01;32m[Kprint[m[K(FILE*, const text_style&, const S&, const Args& ...) [35m[K[with S = char [111]; Args = {long unsigned int, Eigen::Transpose<const Eigen::Matrix<double, 3, 1, 0, 3, 1> >, super_utils::GridType, bool}; typename std::enable_if<detail::is_string<S>::value, int>::type <anonymous> = 0; FILE = FILE][m[K[m[K’
+[24.704s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/fmt/color.h:528:15:[m[K   required from ‘[01m[Kvoid fmt::v9::[01;32m[Kprint[m[K(const text_style&, const S&, const Args& ...) [35m[K[with S = char [111]; Args = {long unsigned int, Eigen::Transpose<const Eigen::Matrix<double, 3, 1, 0, 3, 1> >, super_utils::GridType, bool}; typename std::enable_if<detail::is_string<S>::value, int>::type <anonymous> = 0][m[K[m[K’
+[24.704s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/src/rog_map/rog_map.cpp:126:15:[m[K   required from here
+[24.704s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/fmt/core.h:1735:46:[m[K [01;35m[Kwarning: [m[K‘[01m[Kconstexpr decltype (declval<fmt::v9::detail::arg_mapper<Context> >().map(static_cast<fmt::v9::underlying_t<T> >(val))) fmt::v9::detail::arg_mapper<Context>::[01;32m[Kmap[m[K(const T&) [35m[K[with T = super_utils::GridType; typename std::enable_if<((((std::is_enum<U>::value && std::is_convertible<T, int>::value) && (! fmt::v9::detail::has_format_as<T>::value)) && (! std::is_constructible<typename Context::formatter_type<T> >::value)) && (! fmt::v9::detail::has_fallback_formatter<T, typename Context::char_type>::value)), int>::type <anonymous> = 0; Context = fmt::v9::basic_format_context<fmt::v9::appender, char>; decltype (declval<fmt::v9::detail::arg_mapper<Context> >().map(static_cast<fmt::v9::underlying_t<T> >(val))) = unsigned int; fmt::v9::detail::arg_mapper<Context> = fmt::v9::detail::arg_mapper<fmt::v9::basic_format_context<fmt::v9::appender, char> >; fmt::v9::underlying_t<T> = unsigned int][m[K[m[K’ is deprecated [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wdeprecated-declarations-Wdeprecated-declarations]8;;[m[K]
+[24.704s]  1735 |   const auto& arg = [01;35m[Karg_mapper<Context>().map(FMT_FORWARD(val))[m[K;
+[24.705s]       |                     [01;35m[K~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~[m[K
+[24.705s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/fmt/core.h:1470:48:[m[K [01;36m[Knote: [m[Kdeclared here
+[24.705s]  1470 |   FMT_DEPRECATED FMT_CONSTEXPR FMT_INLINE auto [01;36m[Kmap[m[K(const T& val)
+[24.705s]       |                                                [01;36m[K^~~[m[K
+[24.987s] In file included from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/config.hpp:26[m[K,
+[24.988s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/sliding_map.h:26[m[K,
+[24.988s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/counter_map.h:27[m[K,
+[24.988s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/src/rog_map/counter_map.cpp:24[m[K:
+[24.988s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/common_lib.hpp:120:17:[m[K [01;35m[Kwarning: [m[K‘[01m[Kbool rog_map::[01;32m[KlineIntersectBox[m[K(super_utils::Vec3f, super_utils::Vec3f, super_utils::Vec3f, super_utils::Vec3f, super_utils::Vec3f&)[m[K’ defined but not used [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-function-Wunused-function]8;;[m[K]
+[24.988s]   120 |     static bool [01;35m[KlineIntersectBox[m[K(super_utils::Vec3f L1, super_utils::Vec3f L2, super_utils::Vec3f B1,
+[24.988s]       |                 [01;35m[K^~~~~~~~~~~~~~~~[m[K
+[24.989s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/common_lib.hpp:76:31:[m[K [01;35m[Kwarning: [m[K‘[01m[Ksuper_utils::Vec3f rog_map::[01;32m[KlineBoxIntersectPoint[m[K(const super_utils::Vec3f&, const super_utils::Vec3f&, const super_utils::Vec3f&, const super_utils::Vec3f&)[m[K’ defined but not used [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-function-Wunused-function]8;;[m[K]
+[24.989s]    76 |     static super_utils::Vec3f [01;35m[KlineBoxIntersectPoint[m[K(const super_utils::Vec3f& pt, const super_utils::Vec3f& pos,
+[24.989s]       |                               [01;35m[K^~~~~~~~~~~~~~~~~~~~~[m[K
+[24.989s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/common_lib.hpp:65:19:[m[K [01;35m[Kwarning: [m[K‘[01m[Kdouble rog_map::[01;32m[KcomputePathLength[m[K(super_utils::vec_E<Eigen::Matrix<double, 3, 1> >&)[m[K’ defined but not used [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-function-Wunused-function]8;;[m[K]
+[24.989s]    65 |     static double [01;35m[KcomputePathLength[m[K(const super_utils::vec_E<super_utils::Vec3f>& path) {
+[24.989s]       |                   [01;35m[K^~~~~~~~~~~~~~~~~[m[K
+[25.982s] In file included from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/config.hpp:26[m[K,
+[25.983s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/sliding_map.h:26[m[K,
+[25.983s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/counter_map.h:27[m[K,
+[25.983s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/esdf_map.h:26[m[K,
+[25.983s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/src/rog_map/esdf_map.cpp:24[m[K:
+[25.983s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/common_lib.hpp:120:17:[m[K [01;35m[Kwarning: [m[K‘[01m[Kbool rog_map::[01;32m[KlineIntersectBox[m[K(super_utils::Vec3f, super_utils::Vec3f, super_utils::Vec3f, super_utils::Vec3f, super_utils::Vec3f&)[m[K’ defined but not used [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-function-Wunused-function]8;;[m[K]
+[25.983s]   120 |     static bool [01;35m[KlineIntersectBox[m[K(super_utils::Vec3f L1, super_utils::Vec3f L2, super_utils::Vec3f B1,
+[25.983s]       |                 [01;35m[K^~~~~~~~~~~~~~~~[m[K
+[25.983s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/common_lib.hpp:76:31:[m[K [01;35m[Kwarning: [m[K‘[01m[Ksuper_utils::Vec3f rog_map::[01;32m[KlineBoxIntersectPoint[m[K(const super_utils::Vec3f&, const super_utils::Vec3f&, const super_utils::Vec3f&, const super_utils::Vec3f&)[m[K’ defined but not used [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-function-Wunused-function]8;;[m[K]
+[25.983s]    76 |     static super_utils::Vec3f [01;35m[KlineBoxIntersectPoint[m[K(const super_utils::Vec3f& pt, const super_utils::Vec3f& pos,
+[25.984s]       |                               [01;35m[K^~~~~~~~~~~~~~~~~~~~~[m[K
+[25.984s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/common_lib.hpp:65:19:[m[K [01;35m[Kwarning: [m[K‘[01m[Kdouble rog_map::[01;32m[KcomputePathLength[m[K(super_utils::vec_E<Eigen::Matrix<double, 3, 1> >&)[m[K’ defined but not used [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-function-Wunused-function]8;;[m[K]
+[25.984s]    65 |     static double [01;35m[KcomputePathLength[m[K(const super_utils::vec_E<super_utils::Vec3f>& path) {
+[25.984s]       |                   [01;35m[K^~~~~~~~~~~~~~~~~[m[K
+[26.137s] In file included from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/config.hpp:26[m[K,
+[26.137s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/sliding_map.h:26[m[K,
+[26.137s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/src/rog_map/sliding_map.cpp:24[m[K:
+[26.137s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/common_lib.hpp:120:17:[m[K [01;35m[Kwarning: [m[K‘[01m[Kbool rog_map::[01;32m[KlineIntersectBox[m[K(super_utils::Vec3f, super_utils::Vec3f, super_utils::Vec3f, super_utils::Vec3f, super_utils::Vec3f&)[m[K’ defined but not used [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-function-Wunused-function]8;;[m[K]
+[26.137s]   120 |     static bool [01;35m[KlineIntersectBox[m[K(super_utils::Vec3f L1, super_utils::Vec3f L2, super_utils::Vec3f B1,
+[26.137s]       |                 [01;35m[K^~~~~~~~~~~~~~~~[m[K
+[26.137s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/common_lib.hpp:76:31:[m[K [01;35m[Kwarning: [m[K‘[01m[Ksuper_utils::Vec3f rog_map::[01;32m[KlineBoxIntersectPoint[m[K(const super_utils::Vec3f&, const super_utils::Vec3f&, const super_utils::Vec3f&, const super_utils::Vec3f&)[m[K’ defined but not used [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-function-Wunused-function]8;;[m[K]
+[26.137s]    76 |     static super_utils::Vec3f [01;35m[KlineBoxIntersectPoint[m[K(const super_utils::Vec3f& pt, const super_utils::Vec3f& pos,
+[26.137s]       |                               [01;35m[K^~~~~~~~~~~~~~~~~~~~~[m[K
+[26.137s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/common_lib.hpp:65:19:[m[K [01;35m[Kwarning: [m[K‘[01m[Kdouble rog_map::[01;32m[KcomputePathLength[m[K(super_utils::vec_E<Eigen::Matrix<double, 3, 1> >&)[m[K’ defined but not used [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-function-Wunused-function]8;;[m[K]
+[26.137s]    65 |     static double [01;35m[KcomputePathLength[m[K(const super_utils::vec_E<super_utils::Vec3f>& path) {
+[26.137s]       |                   [01;35m[K^~~~~~~~~~~~~~~~~[m[K
+[26.477s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/common_lib.hpp:[m[K At global scope:
+[26.478s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/common_lib.hpp:120:17:[m[K [01;35m[Kwarning: [m[K‘[01m[Kbool rog_map::[01;32m[KlineIntersectBox[m[K(super_utils::Vec3f, super_utils::Vec3f, super_utils::Vec3f, super_utils::Vec3f, super_utils::Vec3f&)[m[K’ defined but not used [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-function-Wunused-function]8;;[m[K]
+[26.478s]   120 |     static bool [01;35m[KlineIntersectBox[m[K(super_utils::Vec3f L1, super_utils::Vec3f L2, super_utils::Vec3f B1,
+[26.478s]       |                 [01;35m[K^~~~~~~~~~~~~~~~[m[K
+[26.478s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/common_lib.hpp:76:31:[m[K [01;35m[Kwarning: [m[K‘[01m[Ksuper_utils::Vec3f rog_map::[01;32m[KlineBoxIntersectPoint[m[K(const super_utils::Vec3f&, const super_utils::Vec3f&, const super_utils::Vec3f&, const super_utils::Vec3f&)[m[K’ defined but not used [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-function-Wunused-function]8;;[m[K]
+[26.478s]    76 |     static super_utils::Vec3f [01;35m[KlineBoxIntersectPoint[m[K(const super_utils::Vec3f& pt, const super_utils::Vec3f& pos,
+[26.478s]       |                               [01;35m[K^~~~~~~~~~~~~~~~~~~~~[m[K
+[26.478s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/common_lib.hpp:65:19:[m[K [01;35m[Kwarning: [m[K‘[01m[Kdouble rog_map::[01;32m[KcomputePathLength[m[K(super_utils::vec_E<Eigen::Matrix<double, 3, 1> >&)[m[K’ defined but not used [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-function-Wunused-function]8;;[m[K]
+[26.478s]    65 |     static double [01;35m[KcomputePathLength[m[K(const super_utils::vec_E<super_utils::Vec3f>& path) {
+[26.478s]       |                   [01;35m[K^~~~~~~~~~~~~~~~~[m[K
+[26.713s] [01m[Kcc1plus:[m[K [01;36m[Knote: [m[Kunrecognized command-line option ‘[01m[K-Wno-dev[m[K’ may have been intended to silence earlier diagnostics
+[26.868s] In file included from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/config.hpp:26[m[K,
+[26.868s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/sliding_map.h:26[m[K,
+[26.868s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/counter_map.h:27[m[K,
+[26.868s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/inf_map.h:26[m[K,
+[26.868s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/prob_map.h:28[m[K,
+[26.868s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/src/rog_map/prob_map.cpp:24[m[K:
+[26.869s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/common_lib.hpp:120:17:[m[K [01;35m[Kwarning: [m[K‘[01m[Kbool rog_map::[01;32m[KlineIntersectBox[m[K(super_utils::Vec3f, super_utils::Vec3f, super_utils::Vec3f, super_utils::Vec3f, super_utils::Vec3f&)[m[K’ defined but not used [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-function-Wunused-function]8;;[m[K]
+[26.869s]   120 |     static bool [01;35m[KlineIntersectBox[m[K(super_utils::Vec3f L1, super_utils::Vec3f L2, super_utils::Vec3f B1,
+[26.869s]       |                 [01;35m[K^~~~~~~~~~~~~~~~[m[K
+[26.869s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/common_lib.hpp:65:19:[m[K [01;35m[Kwarning: [m[K‘[01m[Kdouble rog_map::[01;32m[KcomputePathLength[m[K(super_utils::vec_E<Eigen::Matrix<double, 3, 1> >&)[m[K’ defined but not used [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-function-Wunused-function]8;;[m[K]
+[26.869s]    65 |     static double [01;35m[KcomputePathLength[m[K(const super_utils::vec_E<super_utils::Vec3f>& path) {
+[26.869s]       |                   [01;35m[K^~~~~~~~~~~~~~~~~[m[K
+[28.127s] [01m[Kcc1plus:[m[K [01;36m[Knote: [m[Kunrecognized command-line option ‘[01m[K-Wno-dev[m[K’ may have been intended to silence earlier diagnostics
+[29.487s] [01m[Kcc1plus:[m[K [01;36m[Knote: [m[Kunrecognized command-line option ‘[01m[K-Wno-dev[m[K’ may have been intended to silence earlier diagnostics
+[30.916s] [01m[Kcc1plus:[m[K [01;36m[Knote: [m[Kunrecognized command-line option ‘[01m[K-Wno-dev[m[K’ may have been intended to silence earlier diagnostics
+[31.714s] In file included from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/config.hpp:26[m[K,
+[31.714s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/sliding_map.h:26[m[K,
+[31.714s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/counter_map.h:27[m[K,
+[31.714s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/inf_map.h:26[m[K,
+[31.714s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/prob_map.h:28[m[K,
+[31.714s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map.h:26[m[K,
+[31.714s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map_ros/rog_map_ros2.hpp:48[m[K,
+[31.715s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/src/rog_map_ros/rog_map_ros1.cpp:14[m[K:
+[31.715s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/common_lib.hpp:120:17:[m[K [01;35m[Kwarning: [m[K‘[01m[Kbool rog_map::[01;32m[KlineIntersectBox[m[K(super_utils::Vec3f, super_utils::Vec3f, super_utils::Vec3f, super_utils::Vec3f, super_utils::Vec3f&)[m[K’ defined but not used [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-function-Wunused-function]8;;[m[K]
+[31.715s]   120 |     static bool [01;35m[KlineIntersectBox[m[K(super_utils::Vec3f L1, super_utils::Vec3f L2, super_utils::Vec3f B1,
+[31.715s]       |                 [01;35m[K^~~~~~~~~~~~~~~~[m[K
+[31.715s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/common_lib.hpp:76:31:[m[K [01;35m[Kwarning: [m[K‘[01m[Ksuper_utils::Vec3f rog_map::[01;32m[KlineBoxIntersectPoint[m[K(const super_utils::Vec3f&, const super_utils::Vec3f&, const super_utils::Vec3f&, const super_utils::Vec3f&)[m[K’ defined but not used [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-function-Wunused-function]8;;[m[K]
+[31.715s]    76 |     static super_utils::Vec3f [01;35m[KlineBoxIntersectPoint[m[K(const super_utils::Vec3f& pt, const super_utils::Vec3f& pos,
+[31.715s]       |                               [01;35m[K^~~~~~~~~~~~~~~~~~~~~[m[K
+[31.715s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/common_lib.hpp:65:19:[m[K [01;35m[Kwarning: [m[K‘[01m[Kdouble rog_map::[01;32m[KcomputePathLength[m[K(super_utils::vec_E<Eigen::Matrix<double, 3, 1> >&)[m[K’ defined but not used [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-function-Wunused-function]8;;[m[K]
+[31.715s]    65 |     static double [01;35m[KcomputePathLength[m[K(const super_utils::vec_E<super_utils::Vec3f>& path) {
+[31.716s]       |                   [01;35m[K^~~~~~~~~~~~~~~~~[m[K
+[32.678s] [01m[Kcc1plus:[m[K [01;36m[Knote: [m[Kunrecognized command-line option ‘[01m[K-Wno-dev[m[K’ may have been intended to silence earlier diagnostics
+[32.822s] [01m[Kcc1plus:[m[K [01;36m[Knote: [m[Kunrecognized command-line option ‘[01m[K-Wno-dev[m[K’ may have been intended to silence earlier diagnostics
+[38.809s] [01m[Kcc1plus:[m[K [01;36m[Knote: [m[Kunrecognized command-line option ‘[01m[K-Wno-dev[m[K’ may have been intended to silence earlier diagnostics
+[40.033s] [ 83%] [32m[1mLinking CXX static library librog_map.a[0m
+[40.329s] [ 83%] Built target rog_map
+[40.365s] [ 91%] [32mBuilding CXX object CMakeFiles/rog_map_node.dir/Apps/rog_map_node.cpp.o[0m
+[52.911s] In file included from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/config.hpp:26[m[K,
+[52.911s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/sliding_map.h:26[m[K,
+[52.911s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/counter_map.h:27[m[K,
+[52.911s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/inf_map.h:26[m[K,
+[52.911s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/prob_map.h:28[m[K,
+[52.911s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map.h:26[m[K,
+[52.911s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map_ros/rog_map_ros2.hpp:48[m[K,
+[52.912s]                  from [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/Apps/rog_map_node.cpp:15[m[K:
+[52.912s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/common_lib.hpp:120:17:[m[K [01;35m[Kwarning: [m[K‘[01m[Kbool rog_map::[01;32m[KlineIntersectBox[m[K(super_utils::Vec3f, super_utils::Vec3f, super_utils::Vec3f, super_utils::Vec3f, super_utils::Vec3f&)[m[K’ defined but not used [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-function-Wunused-function]8;;[m[K]
+[52.912s]   120 |     static bool [01;35m[KlineIntersectBox[m[K(super_utils::Vec3f L1, super_utils::Vec3f L2, super_utils::Vec3f B1,
+[52.912s]       |                 [01;35m[K^~~~~~~~~~~~~~~~[m[K
+[52.912s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/common_lib.hpp:76:31:[m[K [01;35m[Kwarning: [m[K‘[01m[Ksuper_utils::Vec3f rog_map::[01;32m[KlineBoxIntersectPoint[m[K(const super_utils::Vec3f&, const super_utils::Vec3f&, const super_utils::Vec3f&, const super_utils::Vec3f&)[m[K’ defined but not used [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-function-Wunused-function]8;;[m[K]
+[52.912s]    76 |     static super_utils::Vec3f [01;35m[KlineBoxIntersectPoint[m[K(const super_utils::Vec3f& pt, const super_utils::Vec3f& pos,
+[52.912s]       |                               [01;35m[K^~~~~~~~~~~~~~~~~~~~~[m[K
+[52.912s] [01m[K/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/include/rog_map/rog_map_core/common_lib.hpp:65:19:[m[K [01;35m[Kwarning: [m[K‘[01m[Kdouble rog_map::[01;32m[KcomputePathLength[m[K(super_utils::vec_E<Eigen::Matrix<double, 3, 1> >&)[m[K’ defined but not used [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-function-Wunused-function]8;;[m[K]
+[52.912s]    65 |     static double [01;35m[KcomputePathLength[m[K(const super_utils::vec_E<super_utils::Vec3f>& path) {
+[52.912s]       |                   [01;35m[K^~~~~~~~~~~~~~~~~[m[K
+[86.883s] [01m[Kcc1plus:[m[K [01;36m[Knote: [m[Kunrecognized command-line option ‘[01m[K-Wno-dev[m[K’ may have been intended to silence earlier diagnostics
+[91.272s] [100%] [32m[1mLinking CXX executable rog_map_node[0m
+[92.530s] [100%] Built target rog_map_node
+[92.549s] Invoked command in '/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/build/rog_map' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/build/rog_map -- -j16 -l16
+[92.569s] Invoking command in '/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/build/rog_map': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/build/rog_map
+[92.581s] -- Install configuration: "Release"
+[92.581s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/lib/librog_map.a
+[92.615s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/lib/rog_map/rog_map_node
+[92.644s] -- Set non-toolchain portion of runtime path of "/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/lib/rog_map/rog_map_node" to ""
+[92.644s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map
+[92.645s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/super_utils
+[92.645s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/super_utils/type_utils.hpp
+[92.645s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/super_utils/backward.hpp
+[92.645s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/super_utils/color_text.hpp
+[92.645s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/super_utils/yaml_loader.hpp
+[92.645s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/super_utils/tinycolormap.hpp
+[92.647s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/super_utils/color_msg_utils.hpp
+[92.647s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/super_utils/README.md
+[92.647s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/super_utils/scope_timer.hpp
+[92.647s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/super_utils/eigen_alias.hpp
+[92.647s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/super_utils/fmt_eigen.hpp
+[92.648s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/fmt
+[92.648s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/fmt/chrono.h
+[92.648s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/fmt/ostream.h
+[92.648s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/fmt/ranges.h
+[92.649s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/fmt/core.h
+[92.649s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/fmt/format.h
+[92.649s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/fmt/args.h
+[92.649s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/fmt/color.h
+[92.649s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/fmt/format-inl.h
+[92.650s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/fmt/std.h
+[92.650s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/fmt/compile.h
+[92.650s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/fmt/xchar.h
+[92.650s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/fmt/printf.h
+[92.650s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/fmt/os.h
+[92.650s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/rog_map_ros
+[92.650s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/rog_map_ros/rog_map_ros1.hpp
+[92.651s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/rog_map_ros/rog_map_ros2.hpp
+[92.651s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/rog_map
+[92.651s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/rog_map/free_cnt_map.h
+[92.651s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/rog_map/rog_map_core
+[92.651s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/rog_map/rog_map_core/counter_map.h
+[92.651s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/rog_map/rog_map_core/raycaster.h
+[92.651s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/rog_map/rog_map_core/config.hpp
+[92.651s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/rog_map/rog_map_core/sliding_map.h
+[92.651s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/rog_map/rog_map_core/common_lib.hpp
+[92.651s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/rog_map/rog_map_core/raycaster.cpp
+[92.652s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/rog_map/inf_map.h
+[92.652s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/rog_map/esdf_map.h
+[92.652s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/rog_map/projection2d.h
+[92.652s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/rog_map/rog_map.h
+[92.652s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/rog_map/prob_map.h
+[92.652s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/rog_map//launch
+[92.652s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/rog_map//launch/rog_map.launch.py
+[92.652s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/rog_map//config
+[92.652s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/rog_map//config/rog_map.yaml
+[92.652s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/rog_map//config/visualization.cfg
+[92.652s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/ament_index/resource_index/package_run_dependencies/rog_map
+[92.653s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/ament_index/resource_index/parent_prefix_path/rog_map
+[92.653s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/rog_map/environment/ament_prefix_path.sh
+[92.653s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/rog_map/environment/ament_prefix_path.dsv
+[92.653s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/rog_map/environment/path.sh
+[92.653s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/rog_map/environment/path.dsv
+[92.653s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/rog_map/local_setup.bash
+[92.653s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/rog_map/local_setup.sh
+[92.653s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/rog_map/local_setup.zsh
+[92.653s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/rog_map/local_setup.dsv
+[92.653s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/rog_map/package.dsv
+[92.653s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/ament_index/resource_index/packages/rog_map
+[92.654s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/rog_map/cmake/rog_mapConfig.cmake
+[92.654s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/rog_map/cmake/rog_mapConfig-version.cmake
+[92.654s] -- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/rog_map/package.xml
+[92.655s] Invoked command in '/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/build/rog_map' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/build/rog_map

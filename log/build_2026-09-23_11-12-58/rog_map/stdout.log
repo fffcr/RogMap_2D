@@ -1,0 +1,155 @@
+-- The C compiler identification is GNU 13.3.0
+-- The CXX compiler identification is GNU 13.3.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found ament_cmake: 2.5.6 (/opt/ros/jazzy/share/ament_cmake/cmake)
+-- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter 
+-- Found rclcpp: 28.1.22 (/opt/ros/jazzy/share/rclcpp/cmake)
+-- Found rosidl_generator_c: 4.6.9 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)
+-- Found rosidl_generator_cpp: 4.6.9 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)
+-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+-- Found rmw_implementation_cmake: 7.3.3 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)
+-- Found rmw_fastrtps_cpp: 8.4.4 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)
+-- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.13")  
+-- Found FastRTPS: /opt/ros/jazzy/include (Required is at least version "2.13") 
+-- Using RMW implementation 'rmw_fastrtps_cpp' as default
+-- Found std_msgs: 5.3.8 (/opt/ros/jazzy/share/std_msgs/cmake)
+-- Found pcl_ros: 2.6.5 (/opt/ros/jazzy/share/pcl_ros/cmake)
+-- Found flann version 1.9.2
+-- Found OpenMP_CXX: -fopenmp (found version "4.5") 
+-- Found OpenMP: TRUE (found version "4.5") found components: CXX 
+-- Checking for module 'libusb-1.0'
+--   Found libusb-1.0, version 1.0.27
+-- Found libusb: /usr/lib/x86_64-linux-gnu/libusb-1.0.so  
+-- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+-- OpenNI2 found (version: 2.2.0.33, include: /usr/include/openni2, lib: /usr/lib/x86_64-linux-gnu/libOpenNI2.so;libusb::libusb)
+-- Could NOT find Pcap (missing: PCAP_LIBRARIES PCAP_INCLUDE_DIRS) 
+-- Found ZLIB: /usr/lib/x86_64-linux-gnu/libz.so (found version "1.3")  
+-- Found PNG: /usr/lib/x86_64-linux-gnu/libpng.so (found version "1.6.43") 
+-- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+-- OpenNI2 found (version: 2.2.0.33, include: /usr/include/openni2, lib: /usr/lib/x86_64-linux-gnu/libOpenNI2.so;libusb::libusb)
+-- Found Qhull version 8.0.2
+-- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+-- Found PCL_COMMON: /usr/lib/x86_64-linux-gnu/libpcl_common.so  
+-- Found PCL_KDTREE: /usr/lib/x86_64-linux-gnu/libpcl_kdtree.so  
+-- Found PCL_OCTREE: /usr/lib/x86_64-linux-gnu/libpcl_octree.so  
+-- Found PCL_SEARCH: /usr/lib/x86_64-linux-gnu/libpcl_search.so  
+-- Found PCL_SAMPLE_CONSENSUS: /usr/lib/x86_64-linux-gnu/libpcl_sample_consensus.so  
+-- Found PCL_FILTERS: /usr/lib/x86_64-linux-gnu/libpcl_filters.so  
+-- Found PCL_2D: /usr/include/pcl-1.14  
+-- Found PCL_GEOMETRY: /usr/include/pcl-1.14  
+-- Found PCL_IO: /usr/lib/x86_64-linux-gnu/libpcl_io.so  
+-- Found PCL_FEATURES: /usr/lib/x86_64-linux-gnu/libpcl_features.so  
+-- Found PCL_ML: /usr/lib/x86_64-linux-gnu/libpcl_ml.so  
+-- Found PCL_SEGMENTATION: /usr/lib/x86_64-linux-gnu/libpcl_segmentation.so  
+-- Found PCL_VISUALIZATION: /usr/lib/x86_64-linux-gnu/libpcl_visualization.so  
+-- Found PCL_SURFACE: /usr/lib/x86_64-linux-gnu/libpcl_surface.so  
+-- Found PCL_REGISTRATION: /usr/lib/x86_64-linux-gnu/libpcl_registration.so  
+-- Found PCL_KEYPOINTS: /usr/lib/x86_64-linux-gnu/libpcl_keypoints.so  
+-- Found PCL_TRACKING: /usr/lib/x86_64-linux-gnu/libpcl_tracking.so  
+-- Found PCL_RECOGNITION: /usr/lib/x86_64-linux-gnu/libpcl_recognition.so  
+-- Found PCL_STEREO: /usr/lib/x86_64-linux-gnu/libpcl_stereo.so  
+-- Found PCL_APPS: /usr/lib/x86_64-linux-gnu/libpcl_apps.so  
+-- Found PCL_IN_HAND_SCANNER: /usr/include/pcl-1.14  
+-- Found PCL_MODELER: /usr/include/pcl-1.14  
+-- Found PCL_POINT_CLOUD_EDITOR: /usr/include/pcl-1.14  
+-- Found PCL_OUTOFCORE: /usr/lib/x86_64-linux-gnu/libpcl_outofcore.so  
+-- Found PCL_PEOPLE: /usr/lib/x86_64-linux-gnu/libpcl_people.so  
+-- Found eigen3_cmake_module: 0.3.1 (/opt/ros/jazzy/share/eigen3_cmake_module/cmake)
+-- Found Eigen3: TRUE (found version "3.4.0") 
+-- Ensuring Eigen3 include directory is part of orocos-kdl CMake target
+-- Found nav_msgs: 5.3.8 (/opt/ros/jazzy/share/nav_msgs/cmake)
+-- Found visualization_msgs: 5.3.8 (/opt/ros/jazzy/share/visualization_msgs/cmake)
+-- Configuring done (6.2s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/build/rog_map
+[ 16%] [32mBuilding CXX object CMakeFiles/rog_map.dir/src/rog_map/inf_map.cpp.o[0m
+[ 16%] [32mBuilding CXX object CMakeFiles/rog_map.dir/src/rog_map/esdf_map.cpp.o[0m
+[ 41%] [32mBuilding CXX object CMakeFiles/rog_map.dir/src/rog_map/counter_map.cpp.o[0m
+[ 41%] [32mBuilding CXX object CMakeFiles/rog_map.dir/include/rog_map/rog_map_core/raycaster.cpp.o[0m
+[ 41%] [32mBuilding CXX object CMakeFiles/rog_map.dir/src/projection2d.cpp.o[0m
+[ 58%] [32mBuilding CXX object CMakeFiles/rog_map.dir/src/rog_map/sliding_map.cpp.o[0m
+[ 58%] [32mBuilding CXX object CMakeFiles/rog_map.dir/src/rog_map/prob_map.cpp.o[0m
+[ 75%] [32mBuilding CXX object CMakeFiles/rog_map.dir/src/rog_map/rog_map.cpp.o[0m
+[ 75%] [32mBuilding CXX object CMakeFiles/rog_map.dir/src/rog_map_ros/rog_map_ros1.cpp.o[0m
+[ 83%] [32m[1mLinking CXX static library librog_map.a[0m
+[ 83%] Built target rog_map
+[ 91%] [32mBuilding CXX object CMakeFiles/rog_map_node.dir/Apps/rog_map_node.cpp.o[0m
+[100%] [32m[1mLinking CXX executable rog_map_node[0m
+[100%] Built target rog_map_node
+-- Install configuration: "Release"
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/lib/librog_map.a
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/lib/rog_map/rog_map_node
+-- Set non-toolchain portion of runtime path of "/home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/lib/rog_map/rog_map_node" to ""
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/super_utils
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/super_utils/type_utils.hpp
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/super_utils/backward.hpp
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/super_utils/color_text.hpp
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/super_utils/yaml_loader.hpp
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/super_utils/tinycolormap.hpp
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/super_utils/color_msg_utils.hpp
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/super_utils/README.md
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/super_utils/scope_timer.hpp
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/super_utils/eigen_alias.hpp
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/super_utils/fmt_eigen.hpp
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/fmt
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/fmt/chrono.h
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/fmt/ostream.h
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/fmt/ranges.h
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/fmt/core.h
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/fmt/format.h
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/fmt/args.h
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/fmt/color.h
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/fmt/format-inl.h
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/fmt/std.h
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/fmt/compile.h
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/fmt/xchar.h
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/fmt/printf.h
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/fmt/os.h
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/rog_map_ros
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/rog_map_ros/rog_map_ros1.hpp
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/rog_map_ros/rog_map_ros2.hpp
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/rog_map
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/rog_map/free_cnt_map.h
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/rog_map/rog_map_core
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/rog_map/rog_map_core/counter_map.h
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/rog_map/rog_map_core/raycaster.h
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/rog_map/rog_map_core/config.hpp
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/rog_map/rog_map_core/sliding_map.h
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/rog_map/rog_map_core/common_lib.hpp
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/rog_map/rog_map_core/raycaster.cpp
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/rog_map/inf_map.h
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/rog_map/esdf_map.h
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/rog_map/projection2d.h
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/rog_map/rog_map.h
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/include/rog_map/rog_map/prob_map.h
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/rog_map//launch
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/rog_map//launch/rog_map.launch.py
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/rog_map//config
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/rog_map//config/rog_map.yaml
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/rog_map//config/visualization.cfg
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/ament_index/resource_index/package_run_dependencies/rog_map
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/ament_index/resource_index/parent_prefix_path/rog_map
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/rog_map/environment/ament_prefix_path.sh
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/rog_map/environment/ament_prefix_path.dsv
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/rog_map/environment/path.sh
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/rog_map/environment/path.dsv
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/rog_map/local_setup.bash
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/rog_map/local_setup.sh
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/rog_map/local_setup.zsh
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/rog_map/local_setup.dsv
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/rog_map/package.dsv
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/ament_index/resource_index/packages/rog_map
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/rog_map/cmake/rog_mapConfig.cmake
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/rog_map/cmake/rog_mapConfig-version.cmake
+-- Installing: /home/rmadmin/Nav27/ObsMap/src/RogMap_2D/install/rog_map/share/rog_map/package.xml
