@@ -405,10 +405,25 @@ GridType ProbMap::getGridType(Vec3i& id_g) const {
     }
 }
 
+bool ProbMap::projectionZRange(const Vec3f &box_min, const Vec3f &box_max,
+                               double &z_lo, double &z_hi) const {
+    z_lo = std::max(static_cast<double>(box_min.z()), cfg_.projection.z_min);
+    z_hi = std::min(static_cast<double>(box_max.z()), cfg_.projection.z_max);
+    return z_hi >= z_lo;
+}
+
 MinZResult ProbMap::queryCell2D(const double &x, const double &y) const {
     MinZResult r;
+    // 无采样的统一返回值：distance 用 far_distance 作哨兵。
+    // 不能用 MinZResult 的默认 distance = 0.0
+    const auto no_sample = [&]() {
+        r.distance = cfg_.projection.far_distance;
+        r.valid = false;
+        return r;
+    };
+
     if (!cfg_.projection.enable || !cfg_.esdf_en || !esdf_map_) {
-        return r;                                     // valid = false
+        return no_sample();
     }
 
     Vec3f box_min_d, box_max_d;
@@ -417,16 +432,18 @@ MinZResult ProbMap::queryCell2D(const double &x, const double &y) const {
     // xy 必须在更新盒内
     if (x < box_min_d.x() || x > box_max_d.x() ||
         y < box_min_d.y() || y > box_max_d.y()) {
-        return r;
+        return no_sample();
     }
 
-    // 沿整个更新盒的 z 范围采样（min over z）
-    const double z_lo = box_min_d.z();
-    const double z_hi = box_max_d.z();
+    // 沿更新盒与 [z_min, z_max] 的交集采样（min over z）
+    double z_lo, z_hi;
+    if (!projectionZRange(box_min_d, box_max_d, z_lo, z_hi)) {
+        return no_sample();
+    }
 
     // 再确认落在 ESDF 的局部地图内（getHashIndexFromPos 越界会算错但不报错）
     if (!esdf_map_->insideLocalMap(Vec3f(x, y, 0.5 * (z_lo + z_hi)))) {
-        return r;
+        return no_sample();
     }
 
     // 沿 z 采样
@@ -463,6 +480,7 @@ void ProbMap::buildField2D() {
     const size_t n = static_cast<size_t>(w) * static_cast<size_t>(h);
     std::vector<double>  dist_m(n, cfg_.projection.far_distance);
     std::vector<uint8_t> occ(n, 0U);
+    std::vector<uint8_t> unknown(n, 1U);
 
     for (int j = 0; j < h; ++j) {
         for (int i = 0; i < w; ++i) {
@@ -471,12 +489,13 @@ void ProbMap::buildField2D() {
             const double y = origin.y() + (j + 0.5) * res;
             const MinZResult r = queryCell2D(x, y);
             const size_t idx = static_cast<size_t>(j) * static_cast<size_t>(w) + static_cast<size_t>(i);
-            dist_m[idx] = r.distance;
-            occ[idx]    = (r.valid && r.blocked) ? 1U : 0U;
+            dist_m[idx]  = r.valid ? r.distance : cfg_.projection.far_distance;
+            occ[idx]     = (r.valid && r.blocked) ? 1U : 0U;
+            unknown[idx] = r.valid ? 0U : 1U;
         }
     }
 
-    field_.update(w, h, res, origin, std::move(dist_m), std::move(occ));
+    field_.update(w, h, res, origin, std::move(dist_m), std::move(occ), std::move(unknown));
 }
 
 GridType ProbMap::getGridType(const Vec3f& pos) const {

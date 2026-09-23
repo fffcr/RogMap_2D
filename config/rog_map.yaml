@@ -31,6 +31,12 @@ rog_map:
     max_distance: 6.0
     min_distance: -3.0
     clamp_distance: true
+    # 参与 min-over-z 投影的高度范围 [m]，坐标系和上面的 virtual_ceil_height /
+    # virtual_ground_height 一致，即地图系(camera_init)的绝对 z。
+    # 只有落在这个带内的 ESDF 采样才计入该柱，带内无采样的柱发布为 -1(未知)。
+    # 范围会和 esdf.local_update_box 的 z 求交集，想覆盖更高要同时调大后者。
+    z_min: -0.5
+    z_max: 1.0
     # 输出二选一: false = 2D栅格占用图(proj2d) / true = 2D距离场(proj2d_sdf)
     output_esdf: false
 

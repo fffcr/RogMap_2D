@@ -162,7 +162,6 @@ namespace rog_map {
         bool isUnknown(const Vec3i &id_g) const;
 
         bool isKnownFree(const Vec3i &id_g) const;
-
         
         void resetCell(const int &hash_id) override;
 
@@ -177,6 +176,11 @@ namespace rog_map {
         void insertUpdateCandidate(const Vec3i &id_g, bool is_hit);
 
         void updateLocalBox(const Vec3f &cur_odom);
+
+        /// 2D 投影实际生效的 z 采样范围 = ESDF 更新盒 ∩ [projection.z_min, projection.z_max]。
+        /// 返回 false 表示交集为空（该柱应判为未知）。
+        bool projectionZRange(const Vec3f &box_min, const Vec3f &box_max,
+                              double &z_lo, double &z_hi) const;
 
         void resetLocalMap() override;
     };

@@ -4,12 +4,13 @@
 namespace rog_map {
 
 void Field2D::update(int width, int height, double resolution, const Eigen::Vector2d &origin,
-                     std::vector<double> dist_m, std::vector<uint8_t> occupied) {
+                     std::vector<double> dist_m, std::vector<uint8_t> occupied,
+                     std::vector<uint8_t> unknown) {
     if (width <= 0 || height <= 0 || resolution <= 0.0) {
         throw std::invalid_argument("Field2D::update: invalid grid metadata");
     }
     const size_t expected = static_cast<size_t>(width) * static_cast<size_t>(height);
-    if (dist_m.size() != expected || occupied.size() != expected) {
+    if (dist_m.size() != expected || occupied.size() != expected || unknown.size() != expected) {
         throw std::invalid_argument("Field2D::update: size mismatch");
     }
 
@@ -23,6 +24,7 @@ std::lock_guard<std::mutex> lock(mutex_);
     max_distance_ = mx;
     dist_m_.swap(dist_m);
     occ_.swap(occupied);
+    unk_.swap(unknown);
 }
 
 bool Field2D::evaluate(const Eigen::Vector2d &pos, double &dist) const {

@@ -218,6 +218,13 @@ namespace rog_map {
             loader.LoadParam(name_space + "/projection/min_distance",    projection.min_distance,    -3.0);
             loader.LoadParam(name_space + "/projection/clamp_distance",  projection.clamp_distance,  true);
             loader.LoadParam(name_space + "/projection/output_esdf",    projection.output_esdf,    false);
+            /* 投影的高度范围，坐标系与 virtual_ceil_height/virtual_ground_height 一致 */
+            loader.LoadParam(name_space + "/projection/z_min",          projection.z_min,          -100.0);
+            loader.LoadParam(name_space + "/projection/z_max",          projection.z_max,           100.0);
+            if (projection.z_min >= projection.z_max) {
+                throw std::invalid_argument(
+                        " -- [ROG] projection.z_min should be smaller than projection.z_max!");
+            }
 
             resetMapSize();
 

@@ -262,9 +262,12 @@ namespace rog_map {
                 grid.data.resize(static_cast<size_t>(w) * h);
                 const auto &d = f.distances();
                 const auto &occ = f.occupied();
+                const auto &unk = f.unknown();
                 for (size_t i = 0; i < d.size(); ++i) {
                     // -1 未知 / 0 空闲 / 100 致命障碍；中间给渐变代价，方便 costmap 直接用
-                    if (d[i] >= cfg_.projection.max_distance - 1e-6) {
+                    if (unk[i]) {
+                        grid.data[i] = -1;              // 该柱在 [z_min, z_max] 内无有效采样
+                    } else if (d[i] >= cfg_.projection.max_distance - 1e-6) {
                         grid.data[i] = 0;               // 远离开阔区
                     } else if (occ[i]) {
                         grid.data[i] = 100;             // 致命
