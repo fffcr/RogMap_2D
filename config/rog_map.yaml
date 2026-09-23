@@ -15,6 +15,32 @@ rog_map:
 
   load_pcd_en: false
 
+  # 这一段原先没写，全部落到 config.hpp 的 C++ 默认值上，其中 p_miss 的默认值
+  # 是 0.70 —— logit(0.70) = +0.847 是正数，而 missPointUpdate() 里是
+  # `ret += l_miss * n`，于是"射线穿过"反而在增加占据度，障碍物只增不减、
+  # 随移动不断累积。p_miss 必须 < 0.5（即 l_miss 为负）。
+  # 取值对齐队里能跑的配置（sentry1.yaml 0.45 / static_dense.yaml 0.49）。
+  raycasting:
+    enable: true
+    # 每批处理几帧点云；1 = 不攒批，延迟最低。
+    batch_update_size: 1
+    # 射线有效距离 [min, max] m。min 过大会忽略近处点（车体贴障碍物时很致命）。
+    ray_range: [ 0.03, 10 ]
+    # 局部更新盒 [m]，随 odom 走。默认 999 会被夹到整个局部地图，射线裁剪变松。
+    local_update_box: [ 10, 10, 2.5 ]
+    # UNKNOWN/FREE/OCCUPIED 判定用的未知体素占比阈值。
+    unk_thresh: 0.70
+    # 命中一次 / 穿过一次的 log-odds 增量。p_hit=0.9 → +2.197，一次命中即判占据；
+    # p_miss=0.45 → -0.201，清除较慢（动态障碍残留久），想清得快可调到 0.30。
+    p_hit: 0.9
+    p_miss: 0.45
+    # log-odds 的 clamp 上下界。
+    p_min: 0.12
+    p_max: 0.97
+    # 最终二值化阈值：FREE < p_free，OCCUPIED > p_occ，中间为 UNKNOWN。
+    p_occ: 0.85
+    p_free: 0.499
+
   map_sliding:
     enable: true
     # The minimum distance [m] to slide the map.
