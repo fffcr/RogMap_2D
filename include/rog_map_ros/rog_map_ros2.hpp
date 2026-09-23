@@ -333,21 +333,16 @@ namespace rog_map {
                 grid.info.origin.orientation.w = 1.0;
 
                 grid.data.resize(static_cast<size_t>(w) * h);
-                const auto &d = f.distances();
                 const auto &occ = f.occupied();
                 const auto &unk = f.unknown();
-                for (size_t i = 0; i < d.size(); ++i) {
-                    // -1 未知 / 0 空闲 / 100 致命障碍；中间给渐变代价，方便 costmap 直接用
+                for (size_t i = 0; i < unk.size(); ++i) {
+                    // 纯占据栅格，不掺距离信息：-1 未知 / 0 空闲 / 100 障碍
                     if (unk[i]) {
                         grid.data[i] = -1;              // 该柱在 [z_min, z_max] 内无有效采样
-                    } else if (d[i] >= cfg_.projection.max_distance - 1e-6) {
-                        grid.data[i] = 0;               // 远离开阔区
                     } else if (occ[i]) {
-                        grid.data[i] = 100;             // 致命
+                        grid.data[i] = 100;             // 该柱内有 d_3D < 0 的采样，判为障碍
                     } else {
-                        // 距离 < 1 m 的区域给递增代价（0~99），给局部规划器留安全边界
-                        const double t = std::clamp(1.0 - d[i], 0.0, 1.0);
-                        grid.data[i] = static_cast<int8_t>(t * 99.0);
+                        grid.data[i] = 0;               // 已知空闲
                     }
                 }
                 vm_.proj2d_pub->publish(grid);
