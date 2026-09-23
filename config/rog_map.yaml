@@ -34,6 +34,22 @@ rog_map:
     # 输出二选一: false = 2D栅格占用图(proj2d) / true = 2D距离场(proj2d_sdf)
     output_esdf: false
 
+  # 注意：proj2d / esdf / occ 这些发布者是在 rog_map_ros2.hpp 的
+  # `if (cfg_.visualization_en)` 里建的，projection.enable 只管算不算。
+  # 所以这里保持 false 的话 /rog_map/proj2d 根本不会出现。
+  visualization:
+    enable: true
+    # when enabled, use rqt_reconfigure to change the visualization parameters.
+    use_dynamic_reconfigure: false
+    # The rate of visualization [Hz], if set to 0, the visualization will not be triggered by frame.
+    time_rate: 2
+    # The frame rate of visualization [Hz], if set to 0, the visualization will not be triggered by frame.
+    frame_rate: 0
+    # visualization range along the odom [m]. 任一维 <= 0 会直接把整个 visualization 关掉
+    range: [ 15, 15, 4 ]
+    frame_id: "world"
+    pub_unknown_map_en: false
+
 
 
 
