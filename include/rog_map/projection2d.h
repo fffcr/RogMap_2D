@@ -27,10 +27,11 @@ struct MinZConfig {
     bool   clamp_distance = true;
     double far_distance   = 10.0;  // 带内无任何有效采样时的兜底值
 
-    /// 参与 min-over-z 投影的高度范围 [m]，坐标系与 virtual_ceil_height /
-    /// virtual_ground_height 一致，即地图系（camera_init）的绝对 z。
-    /// 只有落在 [z_min, z_max] 内的 ESDF 采样才计入该柱；带内一个有效采样
-    /// 都没有的柱会被标记为未知。
+    /// 参与 min-over-z 投影的高度范围 [m]，定义在 **odom 系**下：
+    /// 实际采样区间是 [odom.z + z_min, odom.z + z_max]，随机器人一起平移，
+    /// 因此 z_min 通常为负（车体在雷达下方的那一段），而不是 camera_init 的绝对 z。
+    /// 只有落在该区间内的 ESDF 采样才计入该柱；带内一个有效采样都没有的柱
+    /// 会被标记为未知。
     /// 默认 ±100 等价于不做限制（实际范围只受 ESDF 更新盒约束）。
     /// 注意：实际生效范围是它与 ESDF 更新盒的交集，想覆盖更高必须同时调大
     /// esdf.local_update_box 的 z。

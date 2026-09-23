@@ -218,7 +218,7 @@ namespace rog_map {
             loader.LoadParam(name_space + "/projection/min_distance",    projection.min_distance,    -3.0);
             loader.LoadParam(name_space + "/projection/clamp_distance",  projection.clamp_distance,  true);
             loader.LoadParam(name_space + "/projection/output_esdf",    projection.output_esdf,    false);
-            /* 投影的高度范围，坐标系与 virtual_ceil_height/virtual_ground_height 一致 */
+            /* 投影的高度范围，odom 系（相对机器人），实际区间 = odom.z + [z_min, z_max] */
             loader.LoadParam(name_space + "/projection/z_min",          projection.z_min,          -100.0);
             loader.LoadParam(name_space + "/projection/z_max",          projection.z_max,           100.0);
             if (projection.z_min >= projection.z_max) {

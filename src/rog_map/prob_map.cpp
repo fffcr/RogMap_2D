@@ -407,8 +407,12 @@ GridType ProbMap::getGridType(Vec3i& id_g) const {
 
 bool ProbMap::projectionZRange(const Vec3f &box_min, const Vec3f &box_max,
                                double &z_lo, double &z_hi) const {
-    z_lo = std::max(static_cast<double>(box_min.z()), cfg_.projection.z_min);
-    z_hi = std::min(static_cast<double>(box_max.z()), cfg_.projection.z_max);
+    // z_min / z_max 定义在 odom 系下（相对机器人的高度），这里先平移到地图系
+    // （camera_init）的绝对 z，再和 ESDF 更新盒求交。
+    // 只做 z 平移、不做旋转：地面机器人的 odom 近似重力对齐，roll/pitch 可忽略。
+    const double odom_z = static_cast<double>(cur_odom_.z());
+    z_lo = std::max(static_cast<double>(box_min.z()), odom_z + cfg_.projection.z_min);
+    z_hi = std::min(static_cast<double>(box_max.z()), odom_z + cfg_.projection.z_max);
     return z_hi >= z_lo;
 }
 
