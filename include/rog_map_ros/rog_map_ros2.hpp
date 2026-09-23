@@ -347,7 +347,7 @@ namespace rog_map {
                     } else {
                         // 距离 < 1 m 的区域给递增代价（0~99），给局部规划器留安全边界
                         const double t = std::clamp(1.0 - d[i], 0.0, 1.0);
-                        grid.data[i] = static_cast<int8_t>(t * 99.0);
+                        grid.data[i] = static_cast<int8_t>(t * 0.0);
                     }
                 }
                 vm_.proj2d_pub->publish(grid);
