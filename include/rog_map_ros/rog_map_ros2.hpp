@@ -378,6 +378,11 @@ namespace rog_map {
                                   .best_effort()
                                   .keep_last(1)
                                   .durability_volatile());
+            //besteffort->reliable
+            const rclcpp::QoS pub_qos(rclcpp::QoS(1)
+                                      .reliable()
+                                      .keep_last(1)
+                                      .durability_volatile());
 
             cfg_ = rog_map::Config(cfg_path);
             // 创建 TransformBroadcaster
@@ -386,24 +391,24 @@ namespace rog_map {
             init();
             /// Initialize visualization module
             if (cfg_.visualization_en) {
-                vm_.occ_pub = nh_->create_publisher<sensor_msgs::msg::PointCloud2>("rog_map/occ", qos);
-                vm_.unknown_pub = nh_->create_publisher<sensor_msgs::msg::PointCloud2>("rog_map/unk", qos);
-                vm_.occ_inf_pub = nh_->create_publisher<sensor_msgs::msg::PointCloud2>("rog_map/inf_occ", qos);
-                vm_.unknown_inf_pub = nh_->create_publisher<sensor_msgs::msg::PointCloud2>("rog_map/inf_unk", qos);
+                vm_.occ_pub = nh_->create_publisher<sensor_msgs::msg::PointCloud2>("rog_map/occ", pub_qos);
+                vm_.unknown_pub = nh_->create_publisher<sensor_msgs::msg::PointCloud2>("rog_map/unk", pub_qos);
+                vm_.occ_inf_pub = nh_->create_publisher<sensor_msgs::msg::PointCloud2>("rog_map/inf_occ", pub_qos);
+                vm_.unknown_inf_pub = nh_->create_publisher<sensor_msgs::msg::PointCloud2>("rog_map/inf_unk", pub_qos);
 
                 if (cfg_.frontier_extraction_en) {
-                    vm_.frontier_pub = nh_->create_publisher<sensor_msgs::msg::PointCloud2>("rog_map/frontier", qos);
+                    vm_.frontier_pub = nh_->create_publisher<sensor_msgs::msg::PointCloud2>("rog_map/frontier", pub_qos);
                 }
 
                 if (cfg_.esdf_en) {
-                    vm_.esdf_pub = nh_->create_publisher<sensor_msgs::msg::PointCloud2>("rog_map/esdf", qos);
-                    // vm_.esdf_neg_pub = nh_->create_publisher<sensor_msgs::msg::PointCloud2>("rog_map/esdf/neg", qos);
-                    // vm_.esdf_occ_pub = nh_->create_publisher<sensor_msgs::msg::PointCloud2>("rog_map/esdf/occ", qos);
+                    vm_.esdf_pub = nh_->create_publisher<sensor_msgs::msg::PointCloud2>("rog_map/esdf", pub_qos);
+                    // vm_.esdf_neg_pub = nh_->create_publisher<sensor_msgs::msg::PointCloud2>("rog_map/esdf/neg", pub_qos);
+                    // vm_.esdf_occ_pub = nh_->create_publisher<sensor_msgs::msg::PointCloud2>("rog_map/esdf/occ", pub_qos);
                 }
 
                 if (cfg_.projection.enable) {
-                    vm_.proj2d_pub = nh_->create_publisher<nav_msgs::msg::OccupancyGrid>("rog_map/proj2d", qos);
-                    vm_.proj2d_sdf_pub = nh_->create_publisher<sensor_msgs::msg::PointCloud2>("rog_map/proj2d_sdf", qos);
+                    vm_.proj2d_pub = nh_->create_publisher<nav_msgs::msg::OccupancyGrid>("rog_map/proj2d", pub_qos);
+                    vm_.proj2d_sdf_pub = nh_->create_publisher<sensor_msgs::msg::PointCloud2>("rog_map/proj2d_sdf", pub_qos);
                 }
 
                 if (cfg_.viz_time_rate > 0) {
@@ -417,7 +422,7 @@ namespace rog_map {
                 }
             }
 
-            vm_.mkr_arr_pub = nh_->create_publisher<visualization_msgs::msg::MarkerArray>("rog_map/map_bound", qos);
+            vm_.mkr_arr_pub = nh_->create_publisher<visualization_msgs::msg::MarkerArray>("rog_map/map_bound", pub_qos);
 
             if (cfg_.ros_callback_en) {
                 rc_.odom_me_cbk_group = nh_->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
