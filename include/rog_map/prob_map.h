@@ -163,7 +163,7 @@ namespace rog_map {
 
         bool isKnownFree(const Vec3i &id_g) const;
 
-        //====================================================================
+        
         void resetCell(const int &hash_id) override;
 
         void probabilisticMapFromCache();

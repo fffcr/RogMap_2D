@@ -56,14 +56,41 @@ target_link_libraries(rog_map PUBLIC
         -ldw
 )
 
+#=================独立调试节点============================#
+# 入口放 Apps/ 而不是 src/，这样不会被上面 GLOB_RECURSE src/*.cpp 收进静态库
+# （否则库里也有一份 main，链接时行为依赖链接顺序，不干净）。
+add_executable(rog_map_node
+        Apps/rog_map_node.cpp
+)
+
+target_link_libraries(rog_map_node PUBLIC
+        rog_map
+)
+
+ament_target_dependencies(rog_map_node PUBLIC
+        rclcpp
+)
+
+#=================INSTALL============================#
 install(TARGETS rog_map
         ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib
         RUNTIME DESTINATION bin
 )
 
+install(TARGETS rog_map_node
+        RUNTIME DESTINATION lib/${PROJECT_NAME}
+)
+
 install(DIRECTORY include/
         DESTINATION include/${PROJECT_NAME}
+)
+
+# install the launch and config files
+install(DIRECTORY
+        launch
+        config
+        DESTINATION share/${PROJECT_NAME}/
 )
 
 ament_package()

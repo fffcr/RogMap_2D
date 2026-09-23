@@ -32,8 +32,7 @@ struct MinZConfig {
     bool output_esdf = false;
 };
 
-/// ── 纯函数：对一个柱子的 3D 距离序列取 min ──
-/// 单元测试只测它。不碰地图、不碰索引，纯逻辑。
+/// 纯函数：对一个柱子的 3D 距离序列取 min 
 inline MinZResult reduceMinZ(const std::vector<double> &col, const MinZConfig &cfg) {
     MinZResult r;
     double best = std::numeric_limits<double>::max();
