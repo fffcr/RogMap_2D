@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <atomic>
 #include <cmath>
 #include <cstdint>
 #include <limits>
@@ -95,10 +96,15 @@ public:
     const std::vector<uint8_t>  &occupied()  const { return occ_; }
     const std::vector<uint8_t>  &unknown()   const { return unk_; }
 
+    /// 每成功 update() 一次自增。外部据此判断"有没有产生新的一帧 2D 场"，
+    /// 从而做到每生成一帧地图就发布一次，而不是按定时器重复发同一帧。
+    uint64_t version() const { return version_.load(std::memory_order_acquire); }
+
 private:
     int width_ = 0, height_ = 0;
     double resolution_ = 0.0, max_distance_ = 0.0;
     Eigen::Vector2d origin_ = Eigen::Vector2d::Zero();
+    std::atomic<uint64_t> version_{0};
     std::vector<double>  dist_m_;
     std::vector<uint8_t> occ_;   ///< 1 = blocked（d_2D < 0），0 = 可通过
     std::vector<uint8_t> unk_;   ///< 1 = 该柱在 [z_min, z_max] 内无有效采样

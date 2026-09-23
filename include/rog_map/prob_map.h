@@ -24,6 +24,8 @@
 
 #pragma once
 
+#include <atomic>
+#include <cstdint>
 #include <queue>
 #include <rog_map/inf_map.h>
 #include <rog_map/free_cnt_map.h>
@@ -111,6 +113,11 @@ namespace rog_map {
         /// 2D 距离场（给外部查询 / 发布用）
         const Field2D &getField2D() const { return field_; }
 
+        /// 已生成的地图帧数：每成功跑完一次 updateProbMap()（即这一帧确实建了图）
+        /// 自增一次，所有提前 return 的路径都不计数。
+        /// 发布端据此做到"生成一帧地图就发一帧"，而不是被 viz 定时器限速。
+        uint64_t mapFrameCount() const { return map_frame_count_.load(std::memory_order_acquire); }
+
     protected:
         rog_map::Config cfg_;
         InfMap::Ptr inf_map_;
@@ -125,6 +132,8 @@ namespace rog_map {
         Field2D field_;
 
         bool map_empty_{true};
+        /// 地图帧计数器，见 mapFrameCount()
+        std::atomic<uint64_t> map_frame_count_{0};
         struct RaycastData {
             raycaster::RayCaster raycaster;
             std::queue<Vec3i> update_cache_id_g;

@@ -74,7 +74,11 @@ namespace rog_map {
             rclcpp::CallbackGroup::SharedPtr viz_reen_cbk_group;
             rclcpp::Publisher<nav_msgs::msg::OccupancyGrid>::SharedPtr proj2d_pub;
             rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr proj2d_sdf_pub;
-            
+            /// 上一次发出去的 Field2D 版本号，用于"每生成一帧地图只发一次"
+            uint64_t published_proj2d_version{0};
+            /// 上一次发出去的 ESDF 对应的地图帧号
+            uint64_t published_esdf_frame_count{0};
+
         } vm_;
 
         struct ROSCallback {
@@ -164,6 +168,9 @@ namespace rog_map {
             rc_.updete_lock.unlock();
 
             updateProbMap(temp_pc, temp_pose);
+            // 建图线程内同步发布，保证"生成一帧就发一帧"
+            publishProj2D();
+            publishESDF();
 
             writeTimeConsumingToLog(time_log_file_);
         }
@@ -227,14 +234,7 @@ namespace rog_map {
 
             /* visualize ESDF Map*/
             if (cfg_.esdf_en) {
-                if (vm_.esdf_pub->get_subscription_count() >= 1) {
-                    PointCloud pc;
-                    esdf_map_->getPositiveESDFPointCloud(box_min, box_max, robot_state_.p.z() - 0.5, pc);
-                    pcl::toROSMsg(pc, cloud_msg);
-                    cloud_msg.header.frame_id = cfg_.frame_id;
-                    cloud_msg.header.stamp = nh_->get_clock()->now();
-                    vm_.esdf_pub->publish(cloud_msg);
-                }
+                /* ESDF 点云的发布已改到 publishESDF()，随地图帧率走，见 updateCallback() */
 
                 // if (vm_.esdf_neg_pub->get_subscription_count() >= 1) {
                 //     PointCloud pc;
@@ -244,66 +244,6 @@ namespace rog_map {
                 //     cloud_msg.header.stamp = nh_->get_clock()->now();
                 //     vm_.esdf_neg_pub->publish(cloud_msg);
                 // }
-
-                if (cfg_.projection.enable && !cfg_.projection.output_esdf && vm_.proj2d_pub->get_subscription_count() >= 1) {
-            const Field2D &f = getField2D();
-            const int w = f.width(), h = f.height();
-            if (w > 0 && h > 0) {
-                nav_msgs::msg::OccupancyGrid grid;
-                grid.header.frame_id = cfg_.frame_id;
-                grid.header.stamp = nh_->get_clock()->now();
-                grid.info.resolution = f.resolution();
-                grid.info.width = w;
-                grid.info.height = h;
-                grid.info.origin.position.x = f.origin().x();
-                grid.info.origin.position.y = f.origin().y();
-                grid.info.origin.orientation.w = 1.0;
-
-                grid.data.resize(static_cast<size_t>(w) * h);
-                const auto &d = f.distances();
-                const auto &occ = f.occupied();
-                const auto &unk = f.unknown();
-                for (size_t i = 0; i < d.size(); ++i) {
-                    // -1 未知 / 0 空闲 / 100 致命障碍；中间给渐变代价，方便 costmap 直接用
-                    if (unk[i]) {
-                        grid.data[i] = -1;              // 该柱在 [z_min, z_max] 内无有效采样
-                    } else if (d[i] >= cfg_.projection.max_distance - 1e-6) {
-                        grid.data[i] = 0;               // 远离开阔区
-                    } else if (occ[i]) {
-                        grid.data[i] = 100;             // 致命
-                    } else {
-                        // 距离 < 1 m 的区域给递增代价（0~99），给局部规划器留安全边界
-                        const double t = std::clamp(1.0 - d[i], 0.0, 1.0);
-                        grid.data[i] = static_cast<int8_t>(t * 99.0);
-                    }
-                }
-                vm_.proj2d_pub->publish(grid);
-            }
-        }
-
-        if (cfg_.projection.enable && cfg_.projection.output_esdf && vm_.proj2d_sdf_pub->get_subscription_count() >= 1) {
-        const Field2D &f = getField2D();
-        const int w = f.width(), h = f.height();
-        const double res = f.resolution();
-        const auto &d = f.distances();
-        pcl::PointCloud<pcl::PointXYZI> pc;
-        pc.reserve(static_cast<size_t>(w) * h);
-        for (int j = 0; j < h; ++j) {
-            for (int i = 0; i < w; ++i) {
-                pcl::PointXYZI pt;
-                pt.x = f.origin().x() + (i + 0.5) * res;
-                pt.y = f.origin().y() + (j + 0.5) * res;
-                pt.z = robot_state_.p.z();          // 画在车的高度，好和 occ 对比
-                pt.intensity = d[static_cast<size_t>(j) * w + i];   // rviz 按 intensity 上色
-                pc.push_back(pt);
-            }
-        }
-        sensor_msgs::msg::PointCloud2 msg;
-        pcl::toROSMsg(pc, msg);
-        msg.header.frame_id = cfg_.frame_id;
-        msg.header.stamp = nh_->get_clock()->now();
-        vm_.proj2d_sdf_pub->publish(msg);
-    }
 
 #ifdef ESDF_MAP_DEBUG
         esdf_map_->getESDFOccPC2(box_min, box_max,cloud_msg);
@@ -353,6 +293,129 @@ namespace rog_map {
             }
 
             vm_.mkr_arr_pub->publish(mkr_arr);
+        }
+
+        /* 发布 2D 投影：每生成一帧地图（updateProbMap 产出一帧新的 Field2D）就发一次，
+           频率 = 建图帧率，不再受 viz_timer / visualization.time_rate 限制。
+           由 updateCallback() 在建图线程里直接调用，和 buildField2D() 串行，
+           因此不会出现"读到正被改写的 field_"的竞争。 */
+        void publishProj2D() {
+            if (!cfg_.projection.enable || !cfg_.esdf_en) {
+                return;     // 不满足时 buildField2D() 也不会跑，没有新场可发
+            }
+            // visualization.enable = false 时下面两个发布者根本没创建，必须判空
+            if (!vm_.proj2d_pub || !vm_.proj2d_sdf_pub) {
+                return;
+            }
+
+            const Field2D &f = getField2D();
+            if (f.version() == vm_.published_proj2d_version) {
+                return;     // 这一帧没有产出新的 2D 场（如 batch 攒帧、odom 越界提前 return）
+            }
+            const int w = f.width(), h = f.height();
+            if (w <= 0 || h <= 0) {
+                return;
+            }
+
+            if (!cfg_.projection.output_esdf) {
+                /* 2D 栅格占用图 */
+                if (vm_.proj2d_pub->get_subscription_count() < 1) {
+                    return;
+                }
+                nav_msgs::msg::OccupancyGrid grid;
+                grid.header.frame_id = cfg_.frame_id;
+                grid.header.stamp = nh_->get_clock()->now();
+                grid.info.resolution = f.resolution();
+                grid.info.width = w;
+                grid.info.height = h;
+                grid.info.origin.position.x = f.origin().x();
+                grid.info.origin.position.y = f.origin().y();
+                grid.info.origin.orientation.w = 1.0;
+
+                grid.data.resize(static_cast<size_t>(w) * h);
+                const auto &d = f.distances();
+                const auto &occ = f.occupied();
+                const auto &unk = f.unknown();
+                for (size_t i = 0; i < d.size(); ++i) {
+                    // -1 未知 / 0 空闲 / 100 致命障碍；中间给渐变代价，方便 costmap 直接用
+                    if (unk[i]) {
+                        grid.data[i] = -1;              // 该柱在 [z_min, z_max] 内无有效采样
+                    } else if (d[i] >= cfg_.projection.max_distance - 1e-6) {
+                        grid.data[i] = 0;               // 远离开阔区
+                    } else if (occ[i]) {
+                        grid.data[i] = 100;             // 致命
+                    } else {
+                        // 距离 < 1 m 的区域给递增代价（0~99），给局部规划器留安全边界
+                        const double t = std::clamp(1.0 - d[i], 0.0, 1.0);
+                        grid.data[i] = static_cast<int8_t>(t * 99.0);
+                    }
+                }
+                vm_.proj2d_pub->publish(grid);
+            } else {
+                /* 2D 距离场 */
+                if (vm_.proj2d_sdf_pub->get_subscription_count() < 1) {
+                    return;
+                }
+                const double res = f.resolution();
+                const auto &d = f.distances();
+                pcl::PointCloud<pcl::PointXYZI> pc;
+                pc.reserve(static_cast<size_t>(w) * h);
+                for (int j = 0; j < h; ++j) {
+                    for (int i = 0; i < w; ++i) {
+                        pcl::PointXYZI pt;
+                        pt.x = f.origin().x() + (i + 0.5) * res;
+                        pt.y = f.origin().y() + (j + 0.5) * res;
+                        pt.z = robot_state_.p.z();      // 画在车的高度，好和 occ 对比
+                        pt.intensity = d[static_cast<size_t>(j) * w + i];   // rviz 按 intensity 上色
+                        pc.push_back(pt);
+                    }
+                }
+                sensor_msgs::msg::PointCloud2 msg;
+                pcl::toROSMsg(pc, msg);
+                msg.header.frame_id = cfg_.frame_id;
+                msg.header.stamp = nh_->get_clock()->now();
+                vm_.proj2d_sdf_pub->publish(msg);
+            }
+
+            vm_.published_proj2d_version = f.version();
+        }
+
+        /* 发布 ESDF 点云：同样"每生成一帧地图发一次"，频率 = 建图帧率。
+           ESDF 数据在 updateESDF3D() 里刷新，而它在每次 updateProbMap() 中都是
+           无条件执行的，所以地图帧号就是 ESDF 的帧号。 */
+        void publishESDF() {
+            if (!cfg_.esdf_en) {
+                return;
+            }
+            // visualization.enable = false 时发布者没创建，必须判空
+            if (!vm_.esdf_pub) {
+                return;
+            }
+            const uint64_t frame_cnt = mapFrameCount();
+            if (frame_cnt == vm_.published_esdf_frame_count) {
+                return;     // 这一帧没有新建图
+            }
+            if (vm_.esdf_pub->get_subscription_count() < 1) {
+                return;
+            }
+
+            // 与 vizCallback 里一致的可视化范围：以机器人为中心的 visualization_range
+            Vec3f box_max = robot_state_.p + cfg_.visualization_range / 2;
+            Vec3f box_min = robot_state_.p - cfg_.visualization_range / 2;
+            boundBoxByLocalMap(box_min, box_max);
+            if ((box_max - box_min).minCoeff() <= 0) {
+                return;     // visualization_range 某一维 <= 0
+            }
+
+            PointCloud pc;
+            esdf_map_->getPositiveESDFPointCloud(box_min, box_max, robot_state_.p.z() - 0.5, pc);
+            sensor_msgs::msg::PointCloud2 cloud_msg;
+            pcl::toROSMsg(pc, cloud_msg);
+            cloud_msg.header.frame_id = cfg_.frame_id;
+            cloud_msg.header.stamp = nh_->get_clock()->now();
+            vm_.esdf_pub->publish(cloud_msg);
+
+            vm_.published_esdf_frame_count = frame_cnt;
         }
 
         void vecEVec3fToPC2(const vec_E<Vec3f>& points, sensor_msgs::msg::PointCloud2& cloud) {

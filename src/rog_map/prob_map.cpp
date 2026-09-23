@@ -380,6 +380,10 @@ void ProbMap::updateProbMap(const PointCloud& cloud, const Pose& pose) {
             }
         }
     }
+
+    // 到这里才算真正产出/刷新了一帧地图（概率图 + ESDF + 2D 投影都已更新完）。
+    // 放在函数末尾，上面那些提前 return 的路径自然不会计数。
+    map_frame_count_.fetch_add(1, std::memory_order_release);
 }
 
 GridType ProbMap::getGridType(Vec3i& id_g) const {

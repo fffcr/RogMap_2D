@@ -25,6 +25,8 @@ std::lock_guard<std::mutex> lock(mutex_);
     dist_m_.swap(dist_m);
     occ_.swap(occupied);
     unk_.swap(unknown);
+    // 放在最后：数据全部就位后才算"这一帧 2D 场已生成"
+    version_.fetch_add(1, std::memory_order_release);
 }
 
 bool Field2D::evaluate(const Eigen::Vector2d &pos, double &dist) const {
