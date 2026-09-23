@@ -56,9 +56,7 @@ target_link_libraries(rog_map PUBLIC
         -ldw
 )
 
-#=================独立调试节点============================#
 # 入口放 Apps/ 而不是 src/，这样不会被上面 GLOB_RECURSE src/*.cpp 收进静态库
-# （否则库里也有一份 main，链接时行为依赖链接顺序，不干净）。
 add_executable(rog_map_node
         Apps/rog_map_node.cpp
 )
