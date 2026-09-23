@@ -312,46 +312,41 @@ namespace rog_map {
 
             /* Publish visualization range */
             visualization_msgs::msg::MarkerArray mkr_arr;
-            visualizeBoundingBox(mkr_arr, nh_->get_clock()->now().seconds(), box_min, box_max, "Visualization Range",
-                                 Color::Purple());
-            visualizeText(mkr_arr, nh_->get_clock()->now().seconds(), "Visualization Range Text", "Visualization Range",
-                          box_max + Vec3f(0, 0, 0.5),
+            visualizeBoundingBox(mkr_arr, nh_->get_clock()->now().seconds(), cfg_.frame_id, box_min, box_max,
+                                 "Visualization Range", Color::Purple());
+            visualizeText(mkr_arr, nh_->get_clock()->now().seconds(), cfg_.frame_id, "Visualization Range Text",
+                          "Visualization Range", box_max + Vec3f(0, 0, 0.5),
                           Color::Purple(), 0.6, 0);
 
             /* Publish local map range */
             Vec3f local_map_max(999, 999, 999), local_map_min(-999, -999, -999);
             boundBoxByLocalMap(local_map_min, local_map_max);
-            visualizeBoundingBox(mkr_arr, nh_->get_clock()->now().seconds(), local_map_min, local_map_max,
-                                 "Local Map Range",
-                                 Color::Orange());
-            visualizeText(mkr_arr, nh_->get_clock()->now().seconds(), "Local Map Range Text", "Local Map Range",
-                          local_map_max + Vec3f(0, 0, 1.0),
-                          Color::Orange(),
-                          0.6, 0);
+            visualizeBoundingBox(mkr_arr, nh_->get_clock()->now().seconds(), cfg_.frame_id, local_map_min,
+                                 local_map_max, "Local Map Range", Color::Orange());
+            visualizeText(mkr_arr, nh_->get_clock()->now().seconds(), cfg_.frame_id, "Local Map Range Text",
+                          "Local Map Range", local_map_max + Vec3f(0, 0, 1.0),
+                          Color::Orange(), 0.6, 0);
 
             /* Publish Ray-casting range */
-            visualizeBoundingBox(mkr_arr, nh_->get_clock()->now().seconds(), raycast_data_.cache_box_min,
-                                 raycast_data_.cache_box_max,
-                                 "Updating Range",
-                                 Color::Green());
-            visualizeText(mkr_arr, nh_->get_clock()->now().seconds(), "Updating Range Text", "Updating Range",
-                          raycast_data_.cache_box_max + Vec3f(0, 0, 0.5),
+            visualizeBoundingBox(mkr_arr, nh_->get_clock()->now().seconds(), cfg_.frame_id,
+                                 raycast_data_.cache_box_min, raycast_data_.cache_box_max,
+                                 "Updating Range", Color::Green());
+            visualizeText(mkr_arr, nh_->get_clock()->now().seconds(), cfg_.frame_id, "Updating Range Text",
+                          "Updating Range", raycast_data_.cache_box_max + Vec3f(0, 0, 0.5),
                           Color::Green(), 0.6, 0);
 
             /* Publish Local map origin */
-            visualizePoint(mkr_arr, nh_->get_clock()->now().seconds(), local_map_origin_d_, Color::Red(),
-                           "Local Map Origin", 0.2, 0);
+            visualizePoint(mkr_arr, nh_->get_clock()->now().seconds(), cfg_.frame_id, local_map_origin_d_,
+                           Color::Red(), "Local Map Origin", 0.2, 0);
 
             if (cfg_.esdf_en) {
                 Vec3f esdf_box_max, esdf_box_min;
                 esdf_map_->getUpdatedBbox(esdf_box_min, esdf_box_max);
-                visualizeText(mkr_arr, nh_->get_clock()->now().seconds(), "ESDF Map Text", "ESDF Map",
-                              esdf_box_max + Vec3f(0, 0, 1.0),
-                              Color::Blue(),
-                              0.6, 0);
-                visualizeBoundingBox(mkr_arr, nh_->get_clock()->now().seconds(), esdf_box_min, esdf_box_max,
-                                     "ESDF Updating Range",
-                                     Color::Blue());
+                visualizeText(mkr_arr, nh_->get_clock()->now().seconds(), cfg_.frame_id, "ESDF Map Text",
+                              "ESDF Map", esdf_box_max + Vec3f(0, 0, 1.0),
+                              Color::Blue(), 0.6, 0);
+                visualizeBoundingBox(mkr_arr, nh_->get_clock()->now().seconds(), cfg_.frame_id, esdf_box_min,
+                                     esdf_box_max, "ESDF Updating Range", Color::Blue());
             }
 
             vm_.mkr_arr_pub->publish(mkr_arr);
@@ -448,6 +443,7 @@ namespace rog_map {
     private:
         static void visualizeBoundingBox(visualization_msgs::msg::MarkerArray& mkrarr,
                                          const double& stamp,
+                                         const string& frame_id,
                                          const Vec3f& box_min,
                                          const Vec3f& box_max,
                                          const string& ns,
@@ -465,7 +461,7 @@ namespace rog_map {
             int id = 0;
             visualization_msgs::msg::Marker line_strip;
             line_strip.header.stamp = rclcpp::Time(stamp);
-            line_strip.header.frame_id = cfg_.frame_id;
+            line_strip.header.frame_id = frame_id;
             line_strip.action = visualization_msgs::msg::Marker::ADD;
             line_strip.ns = ns;
             line_strip.pose.orientation.w = 1.0;
@@ -522,6 +518,7 @@ namespace rog_map {
 
         static void visualizeText(visualization_msgs::msg::MarkerArray& mkr_arr,
                                   const double& stamp,
+                                  const std::string& frame_id,
                                   const std::string& ns,
                                   const std::string& text,
                                   const Vec3f& position,
@@ -529,7 +526,7 @@ namespace rog_map {
                                   const double& size = 0.6,
                                   const int& id = -1) {
             visualization_msgs::msg::Marker marker;
-            marker.header.frame_id = cfg_.frame_id;
+            marker.header.frame_id = frame_id;
             marker.header.stamp = rclcpp::Time(stamp);
             marker.action = visualization_msgs::msg::Marker::ADD;
             marker.pose.orientation.w = 1.0;
@@ -554,6 +551,7 @@ namespace rog_map {
 
         static void visualizePoint(visualization_msgs::msg::MarkerArray& mkr_arr,
                                    const double& stamp,
+                                   const std::string& frame_id,
                                    const Vec3f& pt,
                                    Color color = Color::Pink(),
                                    std::string ns = "pt",
@@ -565,7 +563,7 @@ namespace rog_map {
             if (isnan(pt.x()) || isnan(pt.y()) || isnan(pt.z())) {
                 return;
             }
-            marker_ball.header.frame_id = cfg_.frame_id;
+            marker_ball.header.frame_id = frame_id;
             marker_ball.header.stamp = rclcpp::Time(stamp);
             marker_ball.ns = ns.c_str();
             marker_ball.id = id >= 0 ? id : cnt++;
@@ -588,7 +586,7 @@ namespace rog_map {
             // add test
             if (print_ns) {
                 visualization_msgs::msg::Marker marker;
-                marker.header.frame_id = cfg_.frame_id;
+                marker.header.frame_id = frame_id;
                 marker.header.stamp = rclcpp::Time(stamp);
                 marker.action = visualization_msgs::msg::Marker::ADD;
                 marker.pose.orientation.w = 1.0;
