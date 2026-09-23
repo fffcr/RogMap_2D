@@ -98,18 +98,20 @@ namespace rog_map {
                                                   odom_msg->pose.pose.orientation.z)));
 
 
-            geometry_msgs::msg::TransformStamped transformStamped;
-            transformStamped.header.stamp = nh_->get_clock()->now();
-            transformStamped.header.frame_id = "world";
-            transformStamped.child_frame_id = "drone";
-            transformStamped.transform.translation.x = odom_msg->pose.pose.position.x;
-            transformStamped.transform.translation.y = odom_msg->pose.pose.position.y;
-            transformStamped.transform.translation.z = odom_msg->pose.pose.position.z;
-            transformStamped.transform.rotation.x = odom_msg->pose.pose.orientation.x;
-            transformStamped.transform.rotation.y = odom_msg->pose.pose.orientation.y;
-            transformStamped.transform.rotation.z = odom_msg->pose.pose.orientation.z;
-            transformStamped.transform.rotation.w = odom_msg->pose.pose.orientation.w;
-            br_map_ego_->sendTransform(transformStamped);
+            if (cfg_.pub_odom_tf) {
+                geometry_msgs::msg::TransformStamped transformStamped;
+                transformStamped.header.stamp = odom_msg->header.stamp;
+                transformStamped.header.frame_id = cfg_.frame_id;
+                transformStamped.child_frame_id = odom_msg->child_frame_id;
+                transformStamped.transform.translation.x = odom_msg->pose.pose.position.x;
+                transformStamped.transform.translation.y = odom_msg->pose.pose.position.y;
+                transformStamped.transform.translation.z = odom_msg->pose.pose.position.z;
+                transformStamped.transform.rotation.x = odom_msg->pose.pose.orientation.x;
+                transformStamped.transform.rotation.y = odom_msg->pose.pose.orientation.y;
+                transformStamped.transform.rotation.z = odom_msg->pose.pose.orientation.z;
+                transformStamped.transform.rotation.w = odom_msg->pose.pose.orientation.w;
+                br_map_ego_->sendTransform(transformStamped);
+            }
         }
 
         void cloudCallback(const sensor_msgs::msg::PointCloud2::SharedPtr cloud_msg) {
@@ -229,7 +231,7 @@ namespace rog_map {
                     PointCloud pc;
                     esdf_map_->getPositiveESDFPointCloud(box_min, box_max, robot_state_.p.z() - 0.5, pc);
                     pcl::toROSMsg(pc, cloud_msg);
-                    cloud_msg.header.frame_id = "world";
+                    cloud_msg.header.frame_id = cfg_.frame_id;
                     cloud_msg.header.stamp = nh_->get_clock()->now();
                     vm_.esdf_pub->publish(cloud_msg);
                 }
@@ -238,7 +240,7 @@ namespace rog_map {
                 //     PointCloud pc;
                 //     esdf_map_->getNegativeESDFPointCloud(box_min, box_max, robot_state_.p.z() - 0.5, pc);
                 //     pcl::toROSMsg(pc, cloud_msg);
-                //     cloud_msg.header.frame_id = "world";
+                //     cloud_msg.header.frame_id = cfg_.frame_id;
                 //     cloud_msg.header.stamp = nh_->get_clock()->now();
                 //     vm_.esdf_neg_pub->publish(cloud_msg);
                 // }
@@ -248,7 +250,7 @@ namespace rog_map {
             const int w = f.width(), h = f.height();
             if (w > 0 && h > 0) {
                 nav_msgs::msg::OccupancyGrid grid;
-                grid.header.frame_id = cfg_.frame_id;          // "world"
+                grid.header.frame_id = cfg_.frame_id;
                 grid.header.stamp = nh_->get_clock()->now();
                 grid.info.resolution = f.resolution();
                 grid.info.width = w;
@@ -366,7 +368,7 @@ namespace rog_map {
             }
             pcl::toROSMsg(pcl_cloud, cloud);
             cloud.header.stamp = nh_->get_clock()->now();
-            cloud.header.frame_id = "world";
+            cloud.header.frame_id = cfg_.frame_id;
         }
 
     public:
@@ -463,7 +465,7 @@ namespace rog_map {
             int id = 0;
             visualization_msgs::msg::Marker line_strip;
             line_strip.header.stamp = rclcpp::Time(stamp);
-            line_strip.header.frame_id = "world";
+            line_strip.header.frame_id = cfg_.frame_id;
             line_strip.action = visualization_msgs::msg::Marker::ADD;
             line_strip.ns = ns;
             line_strip.pose.orientation.w = 1.0;
@@ -527,7 +529,7 @@ namespace rog_map {
                                   const double& size = 0.6,
                                   const int& id = -1) {
             visualization_msgs::msg::Marker marker;
-            marker.header.frame_id = "world";
+            marker.header.frame_id = cfg_.frame_id;
             marker.header.stamp = rclcpp::Time(stamp);
             marker.action = visualization_msgs::msg::Marker::ADD;
             marker.pose.orientation.w = 1.0;
@@ -563,7 +565,7 @@ namespace rog_map {
             if (isnan(pt.x()) || isnan(pt.y()) || isnan(pt.z())) {
                 return;
             }
-            marker_ball.header.frame_id = "world";
+            marker_ball.header.frame_id = cfg_.frame_id;
             marker_ball.header.stamp = rclcpp::Time(stamp);
             marker_ball.ns = ns.c_str();
             marker_ball.id = id >= 0 ? id : cnt++;
@@ -586,7 +588,7 @@ namespace rog_map {
             // add test
             if (print_ns) {
                 visualization_msgs::msg::Marker marker;
-                marker.header.frame_id = "world";
+                marker.header.frame_id = cfg_.frame_id;
                 marker.header.stamp = rclcpp::Time(stamp);
                 marker.action = visualization_msgs::msg::Marker::ADD;
                 marker.pose.orientation.w = 1.0;

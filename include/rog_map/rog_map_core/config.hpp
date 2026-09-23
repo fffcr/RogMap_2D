@@ -124,6 +124,7 @@ namespace rog_map {
             loader.LoadParam(name_space + "/visualization/use_dynamic_reconfigure", use_dynamic_reconfigure, false);
             loader.LoadParam(name_space + "/visualization/pub_unknown_map_en", pub_unknown_map_en, false);
             loader.LoadParam(name_space + "/visualization/frame_id", frame_id, string("world"));
+            loader.LoadParam(name_space + "/visualization/pub_odom_tf", pub_odom_tf, false);
             loader.LoadParam(name_space + "/visualization/time_rate", viz_time_rate, 0.0);
             loader.LoadParam(name_space + "/visualization/frame_rate", viz_frame_rate, 0);
             vector<double> temp_vis_range;
@@ -330,6 +331,7 @@ namespace rog_map {
         int intensity_thresh{};
         /* aster properties */
         string frame_id{};
+        bool pub_odom_tf{false};
         bool map_sliding_en{true};
         Vec3f fix_map_origin{};
         string odom_topic{}, cloud_topic{};

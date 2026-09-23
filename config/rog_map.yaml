@@ -47,8 +47,14 @@ rog_map:
     frame_rate: 0
     # visualization range along the odom [m]. 任一维 <= 0 会直接把整个 visualization 关掉
     range: [ 15, 15, 4 ]
-    frame_id: "world"
+    # 必须和 odom / cloud 的实际 frame 一致。FAST-LIO 发的是 camera_init。
+    # rog_map 不做任何 TF 变换，这里只是给发布出去的消息贴标签。
+    frame_id: "camera_init"
     pub_unknown_map_en: false
+    # 由 rog_map 自己广播 odom 的 TF。FAST-LIO 已经在发 camera_init -> body，
+    # 两边同时发 tf2 会报 multiple authority，所以默认关。
+    # 单独跑 rog_map 调试、没有别的节点发 TF 时再打开。
+    pub_odom_tf: false
 
 
 
