@@ -38,6 +38,13 @@ void ROGMap::init() {
     if (cfg_.map_sliding_en) {
         mapSliding(Vec3f(0, 0, 0));
         inf_map_->mapSliding(Vec3f(0, 0, 0));
+        /// esdf_map_ 的 local_map_origin/bound 只在 mapSliding() 里赋值，
+        /// 而滑动开启时 initProbMap() 不会调 slideAllMap()，这里不补一刀的话
+        /// 它到第一次 slideAllMap() 之前一直是未初始化值，getUpdatedBbox()
+        /// 会返回退化的盒子，buildField2D() 直接 return，proj2d_sdf 发不出来。
+        if (cfg_.esdf_en) {
+            esdf_map_->mapSliding(Vec3f(0, 0, 0));
+        }
     }
     else {
         /// if disable map sliding, fix map origin to (0,0,0)
