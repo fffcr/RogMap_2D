@@ -255,6 +255,7 @@ void ROGMap::updateMap(const PointCloud& cloud, const Pose& pose) {
     }
 
     updateRobotState(pose);
+    setUpdateTime(getSystemWalltimeNow());
     updateProbMap(cloud, pose);
 
 

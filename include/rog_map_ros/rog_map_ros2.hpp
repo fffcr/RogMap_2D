@@ -167,6 +167,7 @@ namespace rog_map {
             rc_.unfinished_frame_cnt = 0;
             rc_.updete_lock.unlock();
 
+            setUpdateTime(getSystemWalltimeNow());
             updateProbMap(temp_pc, temp_pose);
             // 建图线程内同步发布，保证"生成一帧就发一帧"
             publishProj2D();

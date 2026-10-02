@@ -25,6 +25,33 @@
 using namespace rog_map;
 using namespace super_utils;
 
+void ProbMap::setUpdateTime(double now) { current_update_time_ = now; }
+
+//将占用判断进行独立（原本集成在其他部分里）
+GridType ProbMap::classifyProb(const float &prob) const {
+    if (isOccupied(prob)) return GridType::OCCUPIED;
+    if (isKnownFree(prob)) return GridType::KNOWN_FREE;
+    return GridType::UNKNOWN;
+}
+
+//将更新同时作用在栅格梯地图和 esdf
+void ProbMap::updateCellState(const Vec3f &pos, const GridType &from_type, const GridType &to_type) {
+    if (from_type == to_type) { return; }
+    Vec3f center_pos;
+    Vec3i id_g;
+    posToGlobalIndex(pos, id_g);
+    globalIndexToPos(id_g, center_pos);
+    inf_map_->updateGridCounter(center_pos, from_type, to_type);
+    if (cfg_.esdf_en) {
+        esdf_map_->updateGridCounter(center_pos, from_type, to_type);
+    }
+    if (cfg_.frontier_extraction_en) {
+        if (from_type == KNOWN_FREE) { fcnt_map_->updateFrontierCounter(id_g, false); }
+        if (to_type   == KNOWN_FREE) { fcnt_map_->updateFrontierCounter(id_g, true);  }
+    }
+}
+
+
 void ProbMap::initProbMap() {
     static bool init_once{false};
     if (init_once) {
@@ -83,6 +110,11 @@ void ProbMap::initProbMap() {
     raycast_data_.raycaster.setResolution(cfg_.resolution);
     raycast_data_.operation_cnt.resize(map_size, 0);
     raycast_data_.hit_cnt.resize(map_size, 0);
+    last_hit_time_.resize(map_size, 0.0);
+    last_update_time_.resize(map_size, 0.0);
+    active_flags_.resize(map_size, 0U);
+    active_ids_.clear();
+
 
     resetLocalMap();
 
@@ -350,6 +382,11 @@ void ProbMap::updateProbMap(const PointCloud& cloud, const Pose& pose) {
     }
     inf_map_->getInflationNumAndTime(time_consuming_[6], time_consuming_[3]);
     time_consuming_[0] = tc.stop();
+
+    /* decay：长时间未被观测的障碍体素按时间压向 free */
+    if (cfg_.decay_en) {
+        applyDecay(current_update_time_);
+    }
 
     /* Update ESDF map */
     if (cfg_.esdf_en) {
@@ -654,6 +691,12 @@ void ProbMap::resetCell(const int& hash_id) {
         // nothing need to do
     }
     ret = 0;
+    //初始化消失系数
+    if (hash_id >= 0 && hash_id < (int)last_hit_time_.size()) {
+        last_hit_time_[hash_id]    = 0.0;
+        last_update_time_[hash_id] = 0.0;
+        active_flags_[hash_id]     = 0U;
+    }
 }
 
 void ProbMap::probabilisticMapFromCache() {
@@ -684,98 +727,229 @@ void ProbMap::probabilisticMapFromCache() {
 
 void ProbMap::hitPointUpdate(const Vec3f& pos, const int& hash_id, const int& hit_num) {
     float& ret = occupancy_buffer_[hash_id];
-    GridType from_type = UNDEFINED;
-
-    if (isOccupied(ret)) {
-        from_type = GridType::OCCUPIED;
-    }
-    else if (isKnownFree(ret)) {
-        from_type = GridType::KNOWN_FREE;
-    }
-    else {
-        from_type = GridType::UNKNOWN;
-    }
-
+    // GridType from_type = UNDEFINED;
+    //
+    // if (isOccupied(ret)) {
+    //     from_type = GridType::OCCUPIED;
+    // }
+    // else if (isKnownFree(ret)) {
+    //     from_type = GridType::KNOWN_FREE;
+    // }
+    // else {
+    //     from_type = GridType::UNKNOWN;
+    // }
+    const GridType from_type = classifyProb(ret);
 
     ret += cfg_.l_hit * hit_num;
     if (ret > cfg_.l_max) {
         ret = cfg_.l_max;
     }
 
-    GridType to_type;
-    if (isOccupied(ret)) {
-        to_type = GridType::OCCUPIED;
-    }
-    else if (isKnownFree(ret)) {
-        to_type = GridType::KNOWN_FREE;
-    }
-    else {
-        to_type = GridType::UNKNOWN;
-    }
+    // GridType to_type;
+    // if (isOccupied(ret)) {
+    //     to_type = GridType::OCCUPIED;
+    // }
+    // else if (isKnownFree(ret)) {
+    //     to_type = GridType::KNOWN_FREE;
+    // }
+    // else {
+    //     to_type = GridType::UNKNOWN;
+    // }
+    const GridType to_type = classifyProb(ret);
 
-    if (from_type != to_type) {
-        Vec3f center_pos;
-        Vec3i id_g;
-        posToGlobalIndex(pos, id_g);
-        globalIndexToPos(id_g, center_pos);
-        inf_map_->updateGridCounter(center_pos, from_type, to_type);
-        if (cfg_.esdf_en) {
-            esdf_map_->updateGridCounter(center_pos, from_type, to_type);
-        }
-        if (cfg_.frontier_extraction_en && from_type == KNOWN_FREE) {
-            Vec3i id_g;
-            posToGlobalIndex(pos, id_g);
-            fcnt_map_->updateFrontierCounter(id_g, false);
+    // if (from_type != to_type) {
+    //     Vec3f center_pos;
+    //     Vec3i id_g;
+    //     posToGlobalIndex(pos, id_g);
+    //     globalIndexToPos(id_g, center_pos);
+    //     inf_map_->updateGridCounter(center_pos, from_type, to_type);
+    //     if (cfg_.esdf_en) {
+    //         esdf_map_->updateGridCounter(center_pos, from_type, to_type);
+    //     }
+    //     if (cfg_.frontier_extraction_en && from_type == KNOWN_FREE) {
+    //         Vec3i id_g;
+    //         posToGlobalIndex(pos, id_g);
+    //         fcnt_map_->updateFrontierCounter(id_g, false);
+    //     }
+    // }
+    updateCellState(pos, from_type, to_type);
+
+    if (hash_id >= 0 && hash_id < (int)last_hit_time_.size()) {
+        last_hit_time_[hash_id]    = current_update_time_;
+        last_update_time_[hash_id] = current_update_time_;
+        if (cfg_.decay_active_list_en && hash_id < (int)active_flags_.size() &&
+            !active_flags_[hash_id]) {
+            active_flags_[hash_id] = 1U;
+            active_ids_.push_back(hash_id);
         }
     }
 }
 
 void ProbMap::missPointUpdate(const Vec3f& pos, const int& hash_id, const int& hit_num) {
     float& ret = occupancy_buffer_[hash_id];
-    GridType from_type;
-    if (isOccupied(ret)) {
-        from_type = GridType::OCCUPIED;
-    }
-    else if (isKnownFree(ret)) {
-        from_type = GridType::KNOWN_FREE;
-    }
-    else {
-        from_type = GridType::UNKNOWN;
-    }
+    // GridType from_type;
+    // if (isOccupied(ret)) {
+    //     from_type = GridType::OCCUPIED;
+    // }
+    // else if (isKnownFree(ret)) {
+    //     from_type = GridType::KNOWN_FREE;
+    // }
+    // else {
+    //     from_type = GridType::UNKNOWN;
+    // }
+    const GridType from_type = classifyProb(ret);
+
     ret += cfg_.l_miss * hit_num;
     if (ret < cfg_.l_min) {
         ret = cfg_.l_min;
     }
 
-    GridType to_type;
-    if (isOccupied(ret)) {
-        to_type = GridType::OCCUPIED;
+    // GridType to_type;
+    // if (isOccupied(ret)) {
+    //     to_type = GridType::OCCUPIED;
+    // }
+    // else if (isKnownFree(ret)) {
+    //     to_type = GridType::KNOWN_FREE;
+    // }
+    // else {
+    //     to_type = GridType::UNKNOWN;
+    // }
+    const GridType to_type = classifyProb(ret);
+
+    // Catch the jump edge
+    // if (from_type != to_type) {
+    //     Vec3f center_pos;
+    //     Vec3i id_g;
+    //     posToGlobalIndex(pos, id_g);
+    //     globalIndexToPos(id_g, center_pos);
+    //     // Update inf map
+    //     inf_map_->updateGridCounter(center_pos, from_type, to_type);
+    //     if (cfg_.esdf_en) {
+    //         esdf_map_->updateGridCounter(center_pos, from_type, to_type);
+    //     }
+    //
+    //
+    //     if (cfg_.frontier_extraction_en && to_type == KNOWN_FREE) {
+    //         Vec3i id_g;
+    //         posToGlobalIndex(pos, id_g);
+    //         fcnt_map_->updateFrontierCounter(id_g, true);
+    //     }
+    // }
+    updateCellState(pos, from_type, to_type);
+
+    if (hash_id >= 0 && hash_id < (int)last_update_time_.size()) {
+        last_update_time_[hash_id] = current_update_time_;
     }
-    else if (isKnownFree(ret)) {
-        to_type = GridType::KNOWN_FREE;
+}
+
+bool ProbMap::applyDecay(double now) {
+    if (!cfg_.decay_en) {
+        return false;
+    }
+
+    const double keep_time = std::max(0.0, cfg_.decay_keep_time);
+    const double clear_time = cfg_.decay_clear_time;
+    const double inv_decay_span = 1.0 / (clear_time - keep_time);
+    const double l_start = static_cast<double>(cfg_.l_max);
+    const double l_end = static_cast<double>(std::nextafter(cfg_.l_free, cfg_.l_min));
+
+    bool changed = false;
+
+    auto keepActive = [](const int hash_id, std::vector<int>* next_active) {
+        if (next_active != nullptr) {
+            next_active->push_back(hash_id);
+        }
+    };
+
+    auto clearActive = [&](const int hash_id) {
+        if (cfg_.decay_active_list_en && hash_id >= 0 &&
+            hash_id < static_cast<int>(active_flags_.size())) {
+            active_flags_[hash_id] = 0U;
+        }
+    };
+
+    auto decayOne = [&](const int hash_id, std::vector<int>* next_active) {
+        if (hash_id < 0 || hash_id >= static_cast<int>(occupancy_buffer_.size()) ||
+            hash_id >= static_cast<int>(last_hit_time_.size()) ||
+            hash_id >= static_cast<int>(last_update_time_.size())) {
+            return;
+        }
+
+        float& prob = occupancy_buffer_[hash_id];
+        const GridType from_type = classifyProb(prob);
+        if (from_type != GridType::OCCUPIED) {
+            clearActive(hash_id);
+            return; //不对未占用进行操作
+        }
+
+        const double last_hit = last_hit_time_[hash_id];
+        if (!(last_hit > 0.0) || now <= last_hit) {
+            keepActive(hash_id, next_active);
+            return; //时间戳异常
+        }
+
+        const double age = now - last_hit;
+        if (age <= keep_time) {
+            keepActive(hash_id, next_active);
+            return;
+        }
+
+        const double old_log = static_cast<double>(prob);
+        double new_log = old_log;
+        if (age >= clear_time) {
+            new_log = l_end;
+        }
+        else {
+            const double ratio = std::clamp((age - keep_time) * inv_decay_span, 0.0, 1.0);
+            const double target_log = (1.0 - ratio) * l_start + ratio * l_end;
+            new_log = std::min(old_log, target_log);
+        }
+        new_log =
+            std::clamp(new_log, static_cast<double>(cfg_.l_min), static_cast<double>(cfg_.l_max));
+
+        if (new_log < old_log - 1.0e-6) {
+            prob = static_cast<float>(new_log);
+            last_update_time_[hash_id] = now;
+
+            const GridType to_type = classifyProb(prob);
+            Vec3f pos;
+            hashIdToPos(hash_id, pos);
+            updateCellState(pos, from_type, to_type);
+
+            changed = true;
+
+            if (to_type == GridType::OCCUPIED) {
+                keepActive(hash_id, next_active);
+            }
+            else {
+                clearActive(hash_id);
+            }
+            return;
+        }
+
+        keepActive(hash_id, next_active);
+    };
+
+    if (cfg_.decay_active_list_en) {
+        std::vector<int> next_active;
+        next_active.reserve(active_ids_.size());
+        for (const int hash_id : active_ids_) {
+            if (hash_id < 0 || hash_id >= static_cast<int>(active_flags_.size()) || !active_flags_[hash_id]) {
+                continue;
+            }
+            decayOne(hash_id, &next_active);
+        }
+        active_ids_.swap(next_active);
     }
     else {
-        to_type = GridType::UNKNOWN;
-    }
-    // Catch the jump edge
-    if (from_type != to_type) {
-        Vec3f center_pos;
-        Vec3i id_g;
-        posToGlobalIndex(pos, id_g);
-        globalIndexToPos(id_g, center_pos);
-        // Update inf map
-        inf_map_->updateGridCounter(center_pos, from_type, to_type);
-        if (cfg_.esdf_en) {
-            esdf_map_->updateGridCounter(center_pos, from_type, to_type);
-        }
-
-
-        if (cfg_.frontier_extraction_en && to_type == KNOWN_FREE) {
-            Vec3i id_g;
-            posToGlobalIndex(pos, id_g);
-            fcnt_map_->updateFrontierCounter(id_g, true);
+        for (int hash_id = 0; hash_id < static_cast<int>(occupancy_buffer_.size()); ++hash_id) {
+            if (classifyProb(occupancy_buffer_[hash_id]) == GridType::OCCUPIED) {
+                decayOne(hash_id, nullptr);
+            }
         }
     }
+
+    return changed;
 }
 
 void ProbMap::raycastProcess(const PointCloud& input_cloud, const Vec3f& cur_odom) {
@@ -954,4 +1128,9 @@ void ProbMap::resetLocalMap() {
     raycast_data_.batch_update_counter = 0;
     std::fill(raycast_data_.operation_cnt.begin(), raycast_data_.operation_cnt.end(), 0);
     std::fill(raycast_data_.hit_cnt.begin(), raycast_data_.hit_cnt.end(), 0);
+    //reset decay params
+    std::fill(last_hit_time_.begin(),    last_hit_time_.end(),    0.0);
+    std::fill(last_update_time_.begin(), last_update_time_.end(), 0.0);
+    std::fill(active_flags_.begin(),     active_flags_.end(),     0U);
+    active_ids_.clear();
 }
