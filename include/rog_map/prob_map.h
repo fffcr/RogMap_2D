@@ -103,6 +103,11 @@ namespace rog_map {
         void updateProbMap(const PointCloud &cloud, const Pose &pose);
 
         GridType getGridType2D(const double &x, const double &y) const;
+        //记录障碍物更新时间
+        void setUpdateTime(double now);
+        //衰减函数
+        bool applyDecay(double now);
+
 
         /// 扫描一个 XY 柱子：min over z 的 3D 距离
         MinZResult queryCell2D(const double &x, const double &y) const;
@@ -125,6 +130,11 @@ namespace rog_map {
         ESDFMap::Ptr esdf_map_;
         /// Spherical neighborhood lookup table
         std::vector<float> occupancy_buffer_;
+        std::vector<double>  last_hit_time_;
+        std::vector<double>  last_update_time_;
+        std::vector<uint8_t> active_flags_;
+        std::vector<int>     active_ids_;
+        double               current_update_time_{0.0};
 
         /// odom 位姿缓存
         Vec3f cur_odom_{};
@@ -175,6 +185,12 @@ namespace rog_map {
         void resetCell(const int &hash_id) override;
 
         void probabilisticMapFromCache();
+
+        /// 由概率值判断栅格类型（原分散在 hit/miss 更新里的 if-else）
+        GridType classifyProb(const float &prob) const;
+
+        /// 栅格类型跃迁时同步 inf map / esdf / frontier 计数
+        void updateCellState(const Vec3f &pos, const GridType &from_type, const GridType &to_type);
 
         void hitPointUpdate(const Vec3f &pos, const int &hash_id, const int &hit_num);
 

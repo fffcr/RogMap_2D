@@ -47,6 +47,17 @@ rog_map:
     # The range of esdf around the odom [m].
     local_update_box: [ 12,12,1.6 ]
 
+  # 障碍衰减：按"最后一次被命中"的时间把长期未观测的障碍体素压回 free。
+  # enable 先保持 false，确认剩余改动不破坏原行为后再打开。
+  decay:
+    enable: false
+    # [s] 命中后 keep_time 内保持不变
+    keep_time: 0.5
+    # [s] 超过 clear_time 直接衰减到 free；两者之间线性过渡
+    clear_time: 1.2
+    # 只遍历"被命中过"的活跃体素，而不是全图扫描
+    active_list_enable: false
+
   projection:
     enable: true
     max_distance: 6.0

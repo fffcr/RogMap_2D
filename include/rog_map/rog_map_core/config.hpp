@@ -225,6 +225,14 @@ namespace rog_map {
                 throw std::invalid_argument(
                         " -- [ROG] projection.z_min should be smaller than projection.z_max!");
             }
+            loader.LoadParam(name_space + "/decay/enable",             decay_en,              false);
+            loader.LoadParam(name_space + "/decay/keep_time",          decay_keep_time,       0.5);
+            loader.LoadParam(name_space + "/decay/clear_time",         decay_clear_time,      1.2);
+            loader.LoadParam(name_space + "/decay/active_list_enable", decay_active_list_en,  false);
+            if (decay_clear_time <= decay_keep_time) {
+                throw std::runtime_error(" -- [ROG] decay.clear_time should be larger than decay.keep_time!");
+            }
+
 
             resetMapSize();
 
@@ -348,6 +356,10 @@ namespace rog_map {
         int point_filt_num{}, batch_update_size{};
         float p_hit{}, p_miss{}, p_min{}, p_max{}, p_occ{}, p_free{};
         float l_hit{}, l_miss{}, l_min{}, l_max{}, l_occ{}, l_free{};
+        bool decay_en = false;
+        double decay_keep_time = 0.5;
+        double decay_clear_time = 1.2;
+        bool decay_active_list_en = false;
 
         /* for unknown inflation */
         bool unk_inflation_en{false};
