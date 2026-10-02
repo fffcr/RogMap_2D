@@ -346,9 +346,20 @@ namespace rog_map {
                     } else if (occ[i]) {
                         grid.data[i] = 100;             // 致命
                     } else {
-                        // 距离 < 1 m 的区域给递增代价（0~99），给局部规划器留安全边界
-                        const double t = std::clamp(1.0 - d[i], 0.0, 1.0);
-                        grid.data[i] = static_cast<int8_t>(t * 0.0);
+                        // 类膨胀代价。d 是 ESDF 有符号距离，自由格 d >= 0（负值的柱已被 occ 拦掉）。
+                        // r_in 以内按"贴墙"处理：给 99（内切）而不是 100（致命），只是劝退不宣判障碍；
+                        // r_in ~ r_out 之间线性衰减到 0，r_out 以外自由。
+                        // 注意 r_out 必须 <= projection.max_distance，否则会被上面的截断提前置 0
+                        constexpr double r_in = 0.3;    // 内半径：以内等效不可通过
+                        constexpr double r_out = 0.6;   // 外半径：膨胀到多远
+                        if (d[i] <= r_in) {
+                            grid.data[i] = 99;
+                        } else if (d[i] < r_out) {
+                            const double t = (r_out - d[i]) / (r_out - r_in);
+                            grid.data[i] = static_cast<int8_t>(t * 99.0);
+                        } else {
+                            grid.data[i] = 0;
+                        }
                     }
                 }
                 vm_.proj2d_pub->publish(grid);
