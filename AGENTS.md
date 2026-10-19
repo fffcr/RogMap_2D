@@ -5,7 +5,7 @@
 本文件是本仓库中 AI Agent、Codex、Claude、superpower skill、多 agent 工作流的统一行为规范。  
 所有代码修改、审计、重构、调参、文档化任务都必须优先阅读并遵守本文件。
 
-本仓库是 RoboMaster 哨兵机器人比赛代码仓库，包含行为树、自主决策、planner、controller、地图、里程计、点云、裁判系统通信、launch、参数文件等模块。仓库中存在已经经过比赛验证的逻辑，任何修改都必须以“保持可复现、最小改动、可审计”为第一原则。
+本仓库是 RoboMaster 导航链路中的 ROG-Map 局部地图包，包含概率占据地图、滑窗局部地图、膨胀地图、ESDF、2D 投影、射线投射、ROS 2 封装、launch、参数文件等模块。仓库中存在已经过实车验证的建图与发布逻辑，任何修改都必须以“保持可复现、最小改动、可审计”为第一原则。
 
 ---
 
@@ -30,8 +30,9 @@
 - `ls`
 - `sed` / `cat`
 - `python3` 静态解析脚本
-- XML 语法解析
+- XML 语法解析（`package.xml`）
 - YAML 语法解析
+- Python launch 文件语法检查（`ast.parse`，不生成字节码）
 - git diff / git status
 - 不触发编译、链接、生成代码的静态检查
 
@@ -88,17 +89,17 @@ Agent 只负责修改工作区文件和说明变更，不负责暂存、提交�
 
 本仓库包含但不限于以下模块：
 
-- 行为树与自主决策：`bt_manager`、行为树 XML、blackboard、裁判系统通信。
-- 规划器：MINCO planner、路径搜索、轨迹优化、重规划逻辑。
-- 控制器：MPC controller、controller_server、速度输出、参数切换。
-- 地图与感知：ROGMap、ProjectionLayer、ESDF、地形投影、动态障碍处理。
-- 里程计与点云：Point-LIO / Batch-LIWO、Livox 驱动、完整点云输出、去畸变、odom。
-- ROS 2 通信：component container、intra-process、QoS、topic、launch、参数文件。
-- 比赛策略：前哨站、冲家、补给、复活、姿态、小陀螺、隧道、台阶、资源兑换。
-- 文档与实验材料：论文、申请材料、性能记录、CSV、图片、演讲稿等。
+- 地图核心：`SlidingMap`（滑窗局部地图与索引系统）、`ProbMap`（log-odds 概率占据）、`CounterMap`、`InfMap`（膨胀层）、`FreeCntMap`（frontier 计数层）。
+- 距离场：`ESDFMap`（3D EDT 距离场）、`Projection2D` / `Field2D`（min-over-z 的 2D 投影场）。
+- 射线与感知输入：`RayCaster`、点云 / odom 回调、虚拟地面与天花板裁剪、障碍 decay。
+- ROS 2 封装：`ROGMapROS`（`include/rog_map_ros/rog_map_ros2.hpp`）、入口 `Apps/rog_map_node.cpp`。
+- 构建与通信：`CMakeLists.txt`、`package.xml`、`launch/rog_map.launch.py`、`config/rog_map.yaml`。
+- 第三方与工具：`include/fmt`、`include/super_utils`。
+- 文档与实验材料：`docs/`、`docs/ai_refactor_records/`。
 
-这是比赛代码，不是单纯实验仓库。  
-不要为了“理论更优”而随意改变比赛验证过的逻辑。
+当前 `CMakeLists.txt` 定义 `USE_ROS2` 与 `ORIGIN_AT_CORNER`；`ros/` 下的 ROS 1 构建文件与 `include/rog_map_ros/rog_map_ros1.hpp` 不参与当前构建。  
+这是比赛导航链路中的局部地图包，不是单纯实验仓库。  
+不要为了“理论更优”而随意改变已经验证过的建图、投影与发布逻辑。
 
 ---
 
@@ -106,16 +107,16 @@ Agent 只负责修改工作区文件和说明变更，不负责暂存、提交�
 
 所有 agent 必须遵守：
 
-1. 不破坏比赛验证过的主逻辑。
+1. 不破坏已经验证过的主逻辑。
 2. 不进行无关重构。
 3. 不顺手删除历史逻辑、注释分支或旧方案，除非用户明确要求。
 4. 不引入大量新变量、新函数、新模块。
-5. 不改变已有 topic、frame、参数名、blackboard key，除非用户明确要求。
+5. 不改变已有 topic、frame、参数名、消息语义，除非用户明确要求。
 6. 不改变模块边界，除非这是本次任务目标。
 7. 不添加高频 debug 日志。
 8. 不添加无用统计。
 9. 不擅自修改 launch 组合方式、QoS、timer、callback group。
-10. 不擅自修改比赛参数默认值。
+10. 不擅自修改已验证的建图参数默认值。
 11. 不把未验证推断写成确定事实。
 12. 每次非平凡修改必须留下改造记录。
 
@@ -144,22 +145,22 @@ Explorer Agent 只读仓库，不修改代码。
 
 职责：
 
-1. 找到与用户需求相关的源码、头文件、XML、launch、yaml、参数文件。
-2. 梳理调用链、数据流、topic、blackboard key、参数来源。
+1. 找到与用户需求相关的源码、头文件、launch、yaml、CMake、参数文件。
+2. 梳理调用链、数据流、topic、参数来源。
 3. 区分“当前生效逻辑”和“注释/废弃/历史逻辑”。
-4. 标记比赛验证逻辑、隐式依赖、潜在冲突。
+4. 标记已验证的建图/发布逻辑、隐式依赖、潜在冲突。
 5. 给 Modifier Agent 明确修改边界。
 6. 把探索结果写入改造记录。
 
 必须检查：
 
-- XML 或 launch 中实际启用的路径。
-- cpp/hpp 中对应节点是否注册、是否被调用。
-- blackboard key 的读写者。
+- launch 中实际启动的节点、参数与 config 路径。
+- cpp/hpp 中对应函数是否注册、是否被调用、是否被 `USE_ROS1` / `USE_ROS2` 宏排除。
+- 关键状态（`robot_state_`、`occupancy_buffer_`、`distance_buffer`、`field_`、`map_frame_count_`）的读写者。
 - ROS topic 的发布者、订阅者、QoS、频率限制。
-- 参数是否来自 yaml、declare_parameter、硬编码或 launch override。
-- 是否有 static、全局变量、类成员状态影响多实例行为。
-- 是否存在同名节点、重复分支、历史注释误导。
+- 参数是否来自 yaml、`Config` loader 默认值、launch override 或硬编码。
+- 是否有 static、全局变量、类成员状态影响多实例或跨线程行为。
+- 是否存在重复分支、历史注释、未启用配置项误导。
 - 是否有用户明确要求不能动的模块。
 
 Explorer Agent 禁止修改文件。
@@ -173,7 +174,7 @@ Modifier Agent 只能根据 Explorer Agent 的记录和用户目标修改代码�
 1. 做最小范围修改。
 2. 保留原有行为优先级。
 3. 不做用户未要求的清理、重命名、重构。
-4. 修改后更新必要注释、参数说明、XML name 或记录文件。
+4. 修改后更新必要注释、参数说明、launch 参数或记录文件。
 5. 如果发现 Explorer 结论不完整，先补充记录，不要直接扩大修改范围。
 
 禁止：
@@ -183,7 +184,7 @@ Modifier Agent 只能根据 Explorer Agent 的记录和用户目标修改代码�
 - 顺手改参数默认值。
 - 顺手删注释分支。
 - 顺手重构类结构。
-- 顺手改 topic 名、frame_id、QoS、blackboard key。
+- 顺手改 topic 名、frame_id、QoS、消息语义、参数名。
 - 顺手把逻辑改成“理论上更优”的版本。
 
 ### 3.3 Auditor Agent：审计与验收
@@ -266,7 +267,7 @@ docs/ai_refactor_records/<YYYYMMDD>_<task_name>.md
 - [ ] 关键路径检查
 - [ ] diff 检查
 - [ ] grep 检查
-- [ ] XML / launch / yaml 检查
+- [ ] launch / yaml / CMake 检查
 - [ ] 用户允许范围内的测试或静态检查
 - [ ] 如需构建，已取得用户明确许可
 
@@ -296,14 +297,15 @@ PASS / NEEDS_FIX
 
 可选：
 
-- 行为树 / 自主决策
-- planner
-- controller
-- map / ROGMap
-- odom / pointcloud
-- launch / communication
-- referee / blackboard
-- parameter / yaml
+- map core / SlidingMap
+- probability / ProbMap
+- inflation / InfMap / CounterMap
+- ESDF / 3D 距离场
+- projection / Field2D
+- raycasting / pointcloud input
+- ROS 通信 / 发布链路
+- parameter / yaml / config
+- build / launch
 - 文档 / 实验记录
 
 ### 5.2 本次修改目标是什么
@@ -327,103 +329,89 @@ PASS / NEEDS_FIX
 - 小幅允许：保持主逻辑，仅修边界条件。
 - 允许：用户明确要求策略变化。
 
-### 5.4 是否涉及比赛验证逻辑
+### 5.4 是否涉及已验证逻辑
 
 如果涉及，必须特别保守，并在记录中写明：
 
 ```text
-本次修改涉及比赛验证逻辑，采用最小改动策略。
+本次修改涉及已验证的建图/发布逻辑，采用最小改动策略。
 ```
 
 ---
 
-## 6. 行为树模块修改规范
+## 6. 核心地图数据结构修改规范
 
-涉及 `bt_manager`、行为树 XML、blackboard、裁判系统通信时必须遵守：
+涉及 `SlidingMap`、`ProbMap`、`CounterMap`、`InfMap`、`FreeCntMap` 时必须遵守：
 
-1. XML active path 是当前逻辑的源头。
-2. 注释掉的 XML 不是当前生效逻辑。
-3. `ReactiveFallback` 的顺序就是优先级。
-4. `ReactiveSequence` 中任何 condition 失败都会阻断后续 action。
-5. `ForceSuccess` 包裹的节点一般只用于刷新状态或日志，不应误判为控制分支。
-6. Condition 节点可能有 blackboard 写入副作用，必须检查源码。
-7. 多棵树共享 blackboard 时，必须检查同一个 key 的多个写入者。
-8. 修改关键 blackboard key 时，必须列出读写者。
-9. 修改姿态、资源、复活、买弹、买血、冲家策略时，必须确认裁判系统通信位段。
-10. XML 中同名节点允许存在但会影响日志和可视化，只有用户要求时才重命名。
-11. 不因为命名不完美而改变比赛验证逻辑。
-12. 不擅自启用被注释的恢复、追击、远程资源分支。
+1. `SlidingMap` 的索引与滑动语义是地基，优先只读调用，不重写。
+2. `ORIGIN_AT_CORNER` 下，全局索引对应格心 `pos = (id + 0.5) * resolution`；origin 是格角，不要混用。
+3. `mapSliding()` 会重置滑出局部地图的 cell，修改时必须同步 `resetCell` / `resetOneCell` 与 counter 状态。
+4. `ProbMap` / `InfMap` / `ESDFMap` / `FreeCntMap` 的滑动必须保持一致，不能只滑其中一个。
+5. 修改 `occupancy_buffer_` 的 log-odds 语义时，必须同时检查 `classifyProb`、`isKnownFree` / `isOccupied` / `isUnknown`、`l_free` / `l_occ`。
+6. 栅格类型要保持 `UNKNOWN` / `KNOWN_FREE` / `OCCUPIED` / `OUT_OF_MAP` / `FRONTIER` 语义稳定。
+7. 不随意改变 `resolution`、`inflation_resolution`、`map_size`、`fix_map_origin`、`virtual_ground_height`、`virtual_ceil_height`。
+8. `esdf_resolution` 与 `resolution` 不是一回事：ESDF 是 `CounterMap`，按 `inflation_ratio` 降分辨率。
+9. 修改 `init()` / `initProbMap()` 时，必须检查所有子图的滑动初始化是否齐全。
+10. 不在热路径新增高频日志或全图扫描。
+11. 不引入会破坏实时性的锁竞争；现有 mutex 的粒度不要随意改变。
+12. 不擅自启用被注释或默认关闭的 `decay`、`frontier_extraction_en`、`unk_inflation_en` 分支。
 
-关键 blackboard key 包括：
-
-```text
-tactical_mode
-current_mode
-nav_goal
-desired_stance
-current_stance
-desired_lifter_pos
-cmd_vel
-use_gyro_mode
-gyro_vel
-target_valid
-target_pose
-outpost_safe_cooldown_active
-enemy_outpost_destroyed
-```
-
-行为树修改后至少执行用户允许范围内的静态检查，例如：
+地图核心修改后至少执行用户允许范围内的静态检查，例如：
 
 ```bash
-grep -RIn "SetTacticalMode\|SetNavMode\|SetCoordinate\|ChangeStance\|CheckTacticalModeCondition" .
-grep -RIn "current_mode\|tactical_mode\|nav_goal\|desired_stance\|cmd_vel" .
+grep -RIn "mapSliding\|slideAllMap\|resetCell\|resetOneCell\|ORIGIN_AT_CORNER\|occupancy_buffer_\|l_occ\|l_free" include/ src/
 ```
 
 如需构建，必须先请求用户确认。
 
 ---
 
-## 7. Planner 修改规范
+## 7. ESDF / 2D 投影修改规范
 
-涉及 MINCO、搜索、轨迹优化、重规划、障碍物响应时必须遵守：
+涉及 `ESDFMap`、`Field2D`、`reduceMinZ`、`queryCell2D`、`buildField2D` 时必须遵守：
 
-1. 不轻易改变全局框架。
-2. 优先小改动修补问题。
-3. 不重新启用已废弃 backup trajectory，除非用户明确要求。
-4. 不把软约束误改成会频繁停车的硬拒绝。
-5. 保持“新最优轨迹可覆盖旧轨迹”的策略。
-6. 不随意增加全段 validation 以外的重复检查。
-7. 不增加大量新 cost 项，除非用户明确要求。
-8. 动态障碍响应优先从权重、吸引项、ESDF 输入质量、重规划时机排查。
-9. 性能相关修改必须保留规划耗时和频率可观测性。
-10. 不引入会破坏实时性的高频日志。
+1. 区分 3D ESDF 与 2D 投影：ESDF 是带符号距离，2D 是 min-over-z 归约。
+2. `distance_buffer` 中占据为负、自由为正，不要反转符号。
+3. 不重写 Felzenszwalb 三趟 EDT 与符号合并，除非用户明确要求。
+4. `ESDFMap::resetLocalMap()` 不清 `distance_buffer`，更新盒外是陈旧值；所有查询必须先确认在更新盒内。
+5. `buildField2D()` 的 `origin` 是格角，`getUpdatedBbox()` 返回格心，必须保留半格回退。
+6. `queryCell2D()` 的 z 采样范围 = ESDF 更新盒 ∩ (`cur_odom_.z() + [projection.z_min, projection.z_max]`)。
+7. 修改 `projection.z_min` / `z_max` 时，必须同时检查 `esdf.local_update_box.z`。
+8. `Field2D::version()` 是发布门控，不要绕过。
+9. `projection.enable` 只控制是否计算；发布者由 `visualization.enable` 创建，不要混淆。
+10. `output_esdf` 二选一：`false` 发布 2D 栅格占用图，`true` 发布 2D 距离场点云。
+11. 投影层耗时优化必须先确认瓶颈是采样、ESDF 查询还是发布。
+12. 不引入会破坏实时性的高频日志。
 
-Planner 修改后至少做静态检查：
+ESDF / 投影修改后至少做静态检查：
 
 ```bash
-grep -RIn "optimize\|replan\|validation\|poscost\|esdf\|backup\|traj" <planner_package>
+grep -RIn "updateESDF3D\|getUpdatedBbox\|queryCell2D\|buildField2D\|reduceMinZ\|Field2D\|projection\|esdf_resolution" include/ src/ config/
 ```
 
 构建前必须先获得用户许可。
 
 ---
 
-## 8. Controller 修改规范
+## 8. 概率更新 / 射线投射修改规范
 
-涉及 MPC、controller_server、速度输出、参数切换时必须遵守：
+涉及 `RayCaster`、`raycastProcess`、hit/miss 更新、decay 时必须遵守：
 
-1. 不改变控制接口 topic，除非用户明确要求。
-2. 不随意改变控制频率、QoS、timer、callback group。
-3. 不让行为树直接长期覆盖 controller 输出，除非是明确的恢复/急停逻辑。
-4. 修改参数切换时必须保存原始参数并恢复。
-5. 修改小陀螺、yaw opt、隧道控制时，必须检查进入和退出条件。
-6. 修改 MPC 求解时，不引入大规模统计或高频日志。
-7. 若 controller 参数由行为树动态切换，必须确认退出分支会恢复原参数。
+1. 不改变点云输入 topic、odom topic、消息类型，除非用户明确要求。
+2. 不随意改变回调频率、QoS、callback group，以及入口节点使用 `MultiThreadedExecutor` 的前提。
+3. `p_hit` / `p_miss` / `p_occ` / `p_free` / `l_*` 是一组联动物理量，不能单独改一个而不检查阈值。
+4. `batch_update_size` 控制攒帧，改大增加延迟；当前默认 1，不要无理由改大。
+5. `ray_range`、`raycasting.local_update_box`、`virtual_ground_height` / `virtual_ceil_height` 与近处障碍处理强相关。
+6. 修改 decay 时必须明确 `keep_time` / `clear_time` / active list 的关系。
+7. decay 时间戳必须是 `double` 秒，不能退化为 float。
+8. 动态障碍清除优先检查 decay 与 active 维护，不盲目调 hit/miss。
+9. 不在 callback 中打印高频详细日志。
+10. 修改点云处理时，必须确认下游使用的 frame、stamp、topic 不变。
 
-Controller 修改后至少做静态检查：
+概率更新 / 射线修改后至少做静态检查：
 
 ```bash
-grep -RIn "cmd_vel\|FollowPath\|use_small_gyro_mode\|enable_yaw_opt\|timer\|callback" <controller_package>
+grep -RIn "raycastProcess\|p_hit\|p_miss\|l_occ\|l_free\|batch_update_size\|decay\|applyDecay\|local_update_box\|virtual_ground" include/ src/ config/
 ```
 
 构建前必须先获得用户许可。
@@ -432,13 +420,13 @@ grep -RIn "cmd_vel\|FollowPath\|use_small_gyro_mode\|enable_yaw_opt\|timer\|call
 
 ## 9. ROGMap / 地图修改规范
 
-涉及 ROGMap、ProjectionLayer、ESDF、占据栅格、decay、地形分类时必须遵守：
+涉及 ROGMap、ProjectionLayer、ESDF、占据栅格、decay、栅格分类时必须遵守：
 
-1. 区分 occupancy、ESDF、projection、active window。
+1. 区分 occupancy、ESDF、projection、inflate、active window。
 2. 修改 decay 时必须明确 hit/miss/decay 的关系。
 3. 动态障碍清除优先检查 decay 与 active 维护，不盲目调 hit/miss。
 4. 投影层耗时优化必须先确认瓶颈是遍历、邻域、内存访问还是通信。
-5. 地形分类要保持 free/occupied/passable/unknown 语义稳定。
+5. 栅格类型分类要保持 `KNOWN_FREE` / `OCCUPIED` / `UNKNOWN` / `OUT_OF_MAP` 语义稳定。
 6. 不随意改变 map resolution、frame_id、map_size。
 7. 不增加无用调试日志。
 8. 参数加载逻辑必须清楚，不保留无意义 fallback，除非用户要求。
@@ -447,54 +435,58 @@ grep -RIn "cmd_vel\|FollowPath\|use_small_gyro_mode\|enable_yaw_opt\|timer\|call
 ROGMap 修改后至少做静态检查：
 
 ```bash
-grep -RIn "decay\|hit\|miss\|active\|projection\|esdf\|occupancy" <map_package>
+grep -RIn "decay\|hit\|miss\|active\|projection\|esdf\|occupancy" include/ src/ config/
 ```
 
 构建前必须先获得用户许可。
 
 ---
 
-## 10. Odom / PointCloud 修改规范
+## 10. ROS 2 封装 / 发布链路修改规范
 
-涉及 Livox、Point-LIO、Batch-LIWO、完整点云、去畸变、intra-process 时必须遵守：
+涉及 `rog_map_ros2.hpp`、`publishProj2D`、`publishESDF`、回调组时必须遵守：
 
-1. 点云链路必须区分原始点云、降采样点云、完整点云。
-2. 完整点云输出必须保证时间升序、去畸变补偿、世界系变换。
-3. 高速小陀螺场景必须特别注意点云时间戳和去畸变。
-4. intra-process 需要 publisher 使用 `std::unique_ptr` 发布才可能发挥零拷贝优势。
-5. odom 高频问题不应简单归因于内存拷贝，需检查调度、QoS、队列、发布频率。
-6. 不随意提高点云发布频率。
-7. 不让 callback 中打印高频详细日志。
-8. 修改完整点云输出时，必须确认下游 ROGMap 使用的 topic、frame、stamp 不变。
-9. 修改 odom 限频时，必须确认 planner、MPC、TF 的订阅需求。
+1. `ROGMapROS` 是 header-only 类，修改后所有 include 它的入口都要一起检查。
+2. 当前构建定义 `USE_ROS2`，`rog_map_ros1.hpp` 整体被宏包住，不参与当前编译；不要只改一边就假定两边一致。
+3. 不改变已有 topic 名、消息类型、frame_id、stamp 语义，除非用户明确要求。
+4. 订阅 QoS 为 `best_effort / keep_last(1) / volatile`，发布 QoS 为 `reliable / keep_last(1) / volatile`；修改前说明影响。
+5. odom / cloud / update timer / viz timer 分属 `MutuallyExclusive` callback group，入口节点必须使用 `MultiThreadedExecutor`。
+6. `updateCallback` 是 1 ms 定时器，负责建图与同步发布；不要在回调内新增阻塞操作。
+7. `publishProj2D()` / `publishESDF()` 的版本门控是“生成一帧发一帧”，不要改回定时器重复发。
+8. 发布者是否创建受 `visualization.enable` 控制，使用前必须判空。
+9. `frame_id` 只给消息贴标签，rog_map 不做 TF 变换；不要假设它和 odom 实际 frame 一致。
+10. `pub_odom_tf` 默认关闭，避免与 FAST-LIO 的 TF 冲突。
+11. 不擅自修改 launch 组合方式、QoS、timer、callback group。
 
-PointCloud/Odom 修改后至少做静态检查：
+ROS 2 封装修改后至少做静态检查：
 
 ```bash
-grep -RIn "cloud_registered_full\|aft_mapped_to_init\|unique_ptr\|publish\|deskew\|undistort\|odom" .
+grep -RIn "create_publisher\|create_subscription\|create_wall_timer\|CallbackGroup\|publishProj2D\|publishESDF\|frame_id\|pub_qos\|QoS" include/ src/ Apps/ launch/
 ```
 
 构建前必须先获得用户许可。
 
 ---
 
-## 11. Launch / ROS 2 通信修改规范
+## 11. Launch / 构建修改规范
 
-涉及 launch、component container、QoS、intra-process 时必须遵守：
+涉及 launch、入口节点、CMake、编译宏时必须遵守：
 
-1. 确认节点是否在同一个 component container。
-2. 开启 intra-process 不等于一定零拷贝，必须检查 unique_ptr 发布和订阅形式。
-3. 大点云优先进程内传输，小消息如 odom 更关注调度和频率。
-4. 不破坏 Nav2 官方功能。
-5. 修改 launch 时必须确认 include 路径和参数路径。
-6. 修改 QoS 时必须考虑 sensor_data、volatile、keep_last、reliable/best_effort 的影响。
-7. 修改 container 划分时，必须说明哪些节点在同一进程，哪些仍跨进程。
-8. 不擅自替换官方 launch，除非用户明确要求。
+1. 确认节点是否由 `launch/rog_map.launch.py` 启动，以及 `config_name` 的解析路径。
+2. 入口 `Apps/rog_map_node.cpp` 通过 `ROOT_DIR + "config/" + config_name` 读取配置，不依赖 install。
+3. `config_name` 只是文件名，不要传绝对路径或把参数塞进 launch 之外。
+4. 修改 launch 时必须确认参数名与 `Apps/rog_map_node.cpp` 的 `declare_parameter` 一致。
+5. 当前 `CMakeLists.txt` 定义 `-DUSE_ROS2` 和 `-DORIGIN_AT_CORNER`；不要随意切换。
+6. `src/*.cpp` 与 `include/*.h(.hpp/.cpp)` 被 `GLOB_RECURSE` 进静态库；新增文件注意不要被重复编入。
+7. `Apps/` 下的入口单独 `add_executable`，不要放进 `src/`。
+8. 编译选项含 `-Werror=unused-variable` / `-Werror=return-type`，新增代码必须保持无警告。
+9. `ros/` 下的 ROS 1 / ROS 2 备用构建文件不是当前生效路径，修改前先确认用户意图。
+10. 不擅自替换官方 launch 或构建方式，除非用户明确要求。
 
-Launch 修改后至少做静态检查：
+Launch / 构建修改后至少做静态检查：
 
 ```bash
-grep -RIn "ComposableNode\|component_container\|use_intra_process_comms\|qos\|parameters\|remappings" launch/ src/
+grep -RIn "config_name\|declare_parameter\|add_definitions\|USE_ROS2\|ORIGIN_AT_CORNER\|GLOB_RECURSE\|add_executable" launch/ Apps/ CMakeLists.txt ros/
 ```
 
 构建前必须先获得用户许可。
@@ -503,39 +495,40 @@ grep -RIn "ComposableNode\|component_container\|use_intra_process_comms\|qos\|pa
 
 ## 12. 参数修改规范
 
-涉及 yaml、declare_parameter、默认值时必须遵守：
+涉及 yaml、`Config` loader、默认值时必须遵守：
 
 1. 不保留无意义 fallback，如果用户明确要求参数必须配置。
-2. 参数名要和 yaml 一致。
+2. 参数名要和 yaml 一致，`Config` loader 的 key 必须能对上 `config/rog_map.yaml`。
 3. 删除参数时必须删除读取、默认值、文档和 yaml。
 4. 修改默认值必须说明原因。
-5. 比赛参数改动必须写入记录文件。
+5. 已验证建图参数改动必须写入记录文件。
 6. 不擅自把硬编码改为参数，除非用户明确要求。
 7. 不擅自删除现有参数兼容性，除非用户明确要求。
+8. 新增参数必须同时更新 `config.hpp` 的 `LoadParam` 与 `config/rog_map.yaml`，不要只改一边。
+9. `resolution`、`inflation_resolution`、`esdf_resolution` 之间存在换算关系，不能孤立调整。
+10. 修改 `projection.z_min` / `z_max` 时必须检查 `esdf.local_update_box.z`；修改 `output_esdf` 时必须说明发布 topic 变化。
 
 ---
 
-## 13. 通信协议 / 裁判系统修改规范
+## 13. ROS 话题 / 消息接口修改规范
 
-涉及裁判系统、blackboard、姿态、资源请求、sentry_info、sentry_cmd 时必须遵守：
+涉及 topic、frame、stamp、消息类型、发布开关时必须遵守：
 
-1. 先确认协议位段，再改枚举或打包。
-2. 保持旧值兼容，尤其是已有姿态、复活、买弹、买血请求。
-3. 修改 enum 时必须同步：
-   - blackboard 默认值
-   - 回调解析
-   - 指令打包
-   - 行为树 XML
-   - 日志转换
-   - 下位机约定
-4. 不要只改发送，不改接收。
-5. 不要只改接收，不改 blackboard。
-6. 不要只改 enum，不改 XML 和打包。
-7. 对 bit field 的修改必须写入记录文件。
-8. 新规则接入建议分阶段：
-   - 先接收并记录
-   - 再扩展枚举和打包
-   - 最后修改策略使用
+1. 先确认消息类型、frame_id、stamp 语义，再改发布或订阅。
+2. 保持旧 topic 兼容，除非用户明确要求。
+3. 修改消息字段或发布开关时必须同步：
+   - 发布端
+   - 订阅端与下游使用方
+   - launch / yaml 开关
+   - 文档与记录
+4. 不要只改发布，不改订阅。
+5. 不要只改订阅，不检查下游。
+6. 不要只改 topic 名，不改 yaml 与下游配置。
+7. 对 QoS / frame / stamp 的修改必须写入记录文件。
+8. 新接口接入建议分阶段：
+   - 先发布并记录
+   - 再接入下游
+   - 最后修改使用逻辑
 
 ---
 
@@ -548,7 +541,7 @@ git status
 git diff
 grep -RIn "<keyword>" .
 rg "<keyword>"
-find . -name "*.xml"
+find . -name "*.yaml" -o -name "*.py"
 python3 - <<'PY'
 # 静态解析脚本
 PY
@@ -569,12 +562,27 @@ for f in Path(".").rglob("*.xml"):
 PY
 ```
 
-YAML 检查可使用 Python 解析，但不得触发构建或代码生成。
+YAML 检查可使用 Python 解析，但不得触发构建或代码生成。  
+Python launch 文件可用 `ast.parse` 做语法检查，不得生成字节码或触发运行时依赖：
+
+```bash
+python3 - <<'PY'
+import ast
+from pathlib import Path
+for f in Path("launch").rglob("*.py"):
+    try:
+        ast.parse(f.read_text(encoding="utf-8"))
+        print("OK", f)
+    except Exception as e:
+        print("FAIL", f, e)
+PY
+```
 
 禁止在未获用户允许前运行构建命令：
 
 ```bash
 colcon build
+colcon build --packages-select rog_map
 catkin build
 catkin_make
 cmake
@@ -651,15 +659,15 @@ PASS / NEEDS_FIX
 1. 大规模重构。
 2. 删除历史注释分支。
 3. 改动多个无关模块。
-4. 修改比赛验证策略。
+4. 修改已验证的建图/发布策略。
 5. 添加复杂新框架。
 6. 添加大量 debug 输出。
-7. 修改 topic / frame / blackboard key。
+7. 修改 topic / frame / QoS / 消息语义。
 8. 修改参数默认值。
 9. 修改 launch 组合方式。
 10. 把未验证推断写成确定事实。
 11. 未获许可执行构建。
-12. 以“清理”为名删除仍可能复用的比赛逻辑。
+12. 以“清理”为名删除仍可能复用的验证逻辑。
 13. 将单模块任务扩展为全仓库重构。
 14. 在未记录的情况下修改行为优先级。
 15. 使用 writingplans 或类似计划说明工具。
@@ -673,10 +681,10 @@ PASS / NEEDS_FIX
 
 ```text
 Step 1：职责边界和残余清理
-Step 2：通信链路或 blackboard 字段
-Step 3：枚举 / 协议 / 参数接入
-Step 4：行为树策略接入
-Step 5：恢复 / 异常处理
+Step 2：数据结构 / 配置字段
+Step 3：概率更新 / 射线 / 膨胀接入
+Step 4：ESDF / 2D 投影接入
+Step 5：ROS 发布 / 异常处理
 Step 6：审计和清理
 ```
 
@@ -697,7 +705,7 @@ Step 6：审计和清理
 6. 复杂任务使用 Explorer → Modifier → Auditor 流程。
 7. 构建必须先询问用户。
 8. 输出应明确哪些行为保持不变、哪些行为被有意改变。
-9. 行为树以当前比赛验证 XML 为准，不按理论重新设计。
-10. 对 planner、controller、ROGMap、Point-LIO 的改造必须保持实时性和通信链路稳定。
+9. 建图行为以当前 `config/rog_map.yaml` 与已验证代码路径为准，不按理论重新设计。
+10. 对 ROGMap、ESDF、2D 投影、点云回调的改造必须保持实时性和通信链路稳定。
 11. 不使用 writingplans 做计划说明、改造计划说明或测试计划说明。
 12. 禁止任何提交类操作，Agent 只修改工作区文件，不暂存、不提交、不推送。
